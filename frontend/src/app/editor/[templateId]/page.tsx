@@ -278,7 +278,7 @@ export default function ContractEditorPage() {
     <div className="flex-1 min-h-0 flex flex-col h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden bg-slate-50">
       
       {/* Top Studio Control Bar */}
-      <div className="h-14 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between gap-4 flex-shrink-0 z-20 shadow-2xs">
+      <div className="h-14 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between gap-4 flex-shrink-0 z-20 shadow-2xs no-print">
         
         {/* Left Back & Title */}
         <div className="flex items-center gap-3 min-w-0">
@@ -369,17 +369,20 @@ export default function ContractEditorPage() {
             </button>
           </div>
 
-          <button
-            onClick={handleSaveClick}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition ${
-              isSaved
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                : 'bg-slate-900 hover:bg-slate-800 text-white shadow-xs'
-            }`}
-          >
-            <Save className="w-3.5 h-3.5" />
-            <span>{isSaved ? 'Saved to Vault' : 'Save to Cloud'}</span>
-          </button>
+          {/* Vault Sync Status Indicator */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold">
+            {isSaved ? (
+              <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Vault Synced</span>
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5 text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <span>Draft Session</span>
+              </span>
+            )}
+          </div>
         </div>
 
       </div>
@@ -388,7 +391,7 @@ export default function ContractEditorPage() {
       <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden">
         
         {/* Left Pane: Intelligent Legal Studio */}
-        <div className="w-full md:w-[440px] lg:w-[480px] flex flex-col flex-shrink-0 min-h-0 bg-white border-r border-slate-200 overflow-hidden">
+        <div className="studio-left-pane no-print w-full md:w-[440px] lg:w-[480px] flex flex-col flex-shrink-0 min-h-0 bg-white border-r border-slate-200 overflow-hidden">
           
           {/* Studio Subtabs */}
           <div className="flex items-center border-b border-slate-200 bg-slate-50/80 px-2 sm:px-3 text-xs font-semibold flex-shrink-0">
@@ -709,6 +712,11 @@ export default function ContractEditorPage() {
             documentId={documentId}
             onSaveRequested={handleSaveClick}
             isSaved={isSaved}
+            onContentChange={handleClauseContentChange}
+            partyAName={fieldData.party_a_name || fieldData.provider_name || fieldData.disclosing_party || 'Party A'}
+            partyBName={fieldData.party_b_name || fieldData.customer_name || fieldData.receiving_party || 'Party B'}
+            partyASignatory={fieldData.party_a_signatory_name || fieldData.provider_signatory_name || 'Authorized Officer'}
+            partyBSignatory={fieldData.party_b_signatory_name || fieldData.customer_signatory_name || 'Authorized Officer'}
           />
         </div>
 

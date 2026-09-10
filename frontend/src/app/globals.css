@@ -49,21 +49,153 @@
   font-weight: 500;
 }
 
-/* Print Styles */
+/* Digital Signature Cursive Fonts */
+.font-signature-1 {
+  font-family: 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive;
+}
+.font-signature-2 {
+  font-family: 'Snell Roundhand', 'Great Vibes', 'Caveat', cursive;
+}
+.font-signature-3 {
+  font-family: 'Bradley Hand', 'Sacramento', cursive;
+}
+
+/* TipTap Legal Editor Typography */
+.tiptap {
+  outline: none;
+}
+.tiptap:focus {
+  outline: none;
+}
+.tiptap p {
+  margin-bottom: 0.65rem;
+  text-align: justify;
+  line-height: 1.7;
+}
+.tiptap h1 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-size: 1.35rem;
+  margin-bottom: 0.5rem;
+}
+.tiptap h2 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1.05rem;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+  color: #0F172A;
+}
+.tiptap h3 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  color: #1E293B;
+}
+.tiptap ul {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+  margin-bottom: 0.65rem;
+}
+.tiptap ol {
+  list-style-type: decimal;
+  margin-left: 1.25rem;
+  margin-bottom: 0.65rem;
+}
+.tiptap li {
+  margin-bottom: 0.25rem;
+}
+.tiptap hr {
+  border-color: #E2E8F0;
+  margin: 1rem 0;
+}
+
+/* Print Styles: Strictly isolate document sheets and hide all application chrome */
 @media print {
-  body {
-    background: white !important;
+  @page {
+    size: letter portrait;
+    margin: 0;
   }
-  .no-print {
+
+  html, body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 10pt;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide website chrome: navbars, sidebars, buttons, toolbars, modal overlays */
+  nav,
+  header,
+  footer,
+  aside,
+  .no-print,
+  [role="navigation"],
+  .studio-left-pane,
+  .preview-action-bar,
+  .preview-toolbar,
+  .floating-controls,
+  button,
+  .toast-notification {
     display: none !important;
   }
-  .print-only {
+
+  /* Flatten layout tree */
+  body > div,
+  main,
+  .app-workspace,
+  .preview-container,
+  .document-viewport {
     display: block !important;
-  }
-  .legal-document {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  #printable-document-container {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .document-page-sheet {
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 10.5in !important;
+    padding: 16mm 18mm !important;
+    box-sizing: border-box !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    background: white !important;
+  }
+
+  .document-page-sheet:last-of-type {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  .page-break-indicator {
+    display: none !important;
   }
 }
 

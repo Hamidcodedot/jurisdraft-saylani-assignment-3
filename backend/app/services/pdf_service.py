@@ -1,10 +1,11 @@
 import io
 import re
+import base64
 from typing import Optional
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak, Image as RLImage
 from reportlab.pdfgen import canvas
 
 class NumberedCanvas(canvas.Canvas):
@@ -51,9 +52,29 @@ class NumberedCanvas(canvas.Canvas):
         self.restoreState()
 
 class PDFService:
-    def generate_pdf(self, markdown_text: str, document_title: str = "Legal Document") -> bytes:
+    def _make_signature_image(self, data_url: str):
+        try:
+            if not data_url:
+                return None
+            if "," in data_url:
+                _, encoded = data_url.split(",", 1)
+            else:
+                encoded = data_url
+            img_bytes = base64.b64decode(encoded)
+            return RLImage(io.BytesIO(img_bytes), width=120, height=36)
+        except Exception:
+            return None
+
+    def generate_pdf(
+        self,
+        markdown_text: str,
+        document_title: str = "Legal Document",
+        party_a_signature: Optional[str] = None,
+        party_b_signature: Optional[str] = None
+    ) -> bytes:
         """
-        Convert Markdown legal document into a professional, publication-ready PDF.
+        Convert Markdown legal document into a professional, publication-ready PDF
+        with support for page breaks and embedded cryptographic/digital signatures.
         """
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
@@ -134,12 +155,17 @@ class PDFService:
 
         # Parse and translate Markdown lines
         lines = markdown_text.split("\n")
-        in_witness_block = False
+        current_party = None
 
         for line in lines:
             line_str = line.strip()
             if not line_str:
                 story.append(Spacer(1, 4))
+                continue
+
+            # Explicit Page Breaks
+            if line_str in ["<!-- pagebreak -->", "<!-- page-break -->", "<div class=\"pagebreak\"></div>", "<div class=\"page-break\"></div>"]:
+                story.append(PageBreak())
                 continue
 
             # Markdown H1 (# Header)
@@ -163,6 +189,32 @@ class PDFService:
                 story.append(Spacer(1, 4))
                 story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#E2E8F0"), spaceAfter=6))
             
+            # Track execution block parties
+            elif any(line_str.upper().startswith(p) for p in ["PARTY A:", "PARTY 1:", "DISCLOSING PARTY:", "PROVIDER:", "COMPANY:"]):
+                current_party = "A"
+                formatted = self._format_inline_markdown(line_str)
+                story.append(Paragraph(formatted, body_style))
+
+            elif any(line_str.upper().startswith(p) for p in ["PARTY B:", "PARTY 2:", "RECEIVING PARTY:", "CUSTOMER:", "CLIENT:", "RECIPIENT:"]):
+                current_party = "B"
+                formatted = self._format_inline_markdown(line_str)
+                story.append(Paragraph(formatted, body_style))
+
+            # Signature Line injection
+            elif line_str.startswith("By:") or line_str.startswith("Signature:"):
+                sig_flowable = None
+                if current_party == "A" and party_a_signature:
+                    sig_flowable = self._make_signature_image(party_a_signature)
+                elif current_party == "B" and party_b_signature:
+                    sig_flowable = self._make_signature_image(party_b_signature)
+
+                if sig_flowable:
+                    story.append(Spacer(1, 4))
+                    story.append(sig_flowable)
+                    story.append(Paragraph("<i>[Digitally Verified Signature]</i>", disclaimer_box_style))
+                formatted = self._format_inline_markdown(line_str)
+                story.append(Paragraph(formatted, body_style))
+
             # List item or Recital bullet
             elif line_str.startswith("- ") or line_str.startswith("* "):
                 clean_text = line_str[2:].strip()

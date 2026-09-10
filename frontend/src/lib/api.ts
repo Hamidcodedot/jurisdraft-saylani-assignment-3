@@ -194,11 +194,20 @@ export const api = {
     document.body.removeChild(a);
   },
 
-  async exportDirectPdf(markdownContent: string, title: string): Promise<void> {
+  async exportDirectPdf(
+    markdownContent: string,
+    title: string,
+    signatures?: { partyA?: string | null; partyB?: string | null }
+  ): Promise<void> {
     const res = await fetch(`${API_BASE}/documents/export-pdf`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ markdown_content: markdownContent, title }),
+      body: JSON.stringify({
+        markdown_content: markdownContent,
+        title,
+        party_a_signature: signatures?.partyA || undefined,
+        party_b_signature: signatures?.partyB || undefined,
+      }),
     });
     if (!res.ok) throw new Error('Failed to export PDF');
     const blob = await res.blob();

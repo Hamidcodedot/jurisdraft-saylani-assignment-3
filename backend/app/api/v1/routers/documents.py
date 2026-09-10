@@ -17,6 +17,8 @@ class DirectExportRequest(BaseModel):
     markdown_content: str
     title: str = "Legal Document"
     filename: Optional[str] = None
+    party_a_signature: Optional[str] = None
+    party_b_signature: Optional[str] = None
 
 @router.get("", response_model=List[DocumentListItem])
 async def list_my_documents(
@@ -216,8 +218,13 @@ async def download_document_pdf(
 
 @router.post("/export-pdf")
 async def export_direct_pdf(request: DirectExportRequest):
-    """Generate and stream a legal PDF directly from Markdown content."""
-    pdf_bytes = pdf_service.generate_pdf(request.markdown_content, document_title=request.title)
+    """Generate and stream a legal PDF directly from Markdown content with optional signatures."""
+    pdf_bytes = pdf_service.generate_pdf(
+        request.markdown_content,
+        document_title=request.title,
+        party_a_signature=request.party_a_signature,
+        party_b_signature=request.party_b_signature
+    )
     filename = request.filename or f"{request.title.lower().replace(' ', '_')}.pdf"
     return Response(
         content=pdf_bytes,
