@@ -15,7 +15,8 @@ RUN npm ci
 COPY frontend/ ./
 # Configure Next.js for static HTML export
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npx next build
+ENV NEXT_OUTPUT_EXPORT=true
+RUN npm run build
 
 # ----------------------------------------------------------
 # Stage 2: Build & Run Production FastAPI Backend
@@ -40,10 +41,8 @@ COPY catalog.json ./catalog.json
 COPY LICENSE ./LICENSE
 COPY CLAUDE.md ./CLAUDE.md
 
-# Copy compiled frontend from Stage 1 into backend static directory
-# If Next export created an 'out' directory, copy it; else copy build
-RUN mkdir -p ./backend/static
-COPY --from=frontend-builder /app/frontend/.next ./backend/static/.next || true
+# Copy compiled static frontend from Stage 1 into backend static directory
+COPY --from=frontend-builder /app/frontend/out ./backend/static
 
 # Set environment
 ENV PYTHONPATH=/app
