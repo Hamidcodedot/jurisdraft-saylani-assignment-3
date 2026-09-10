@@ -713,10 +713,51 @@ export default function ContractEditorPage() {
             onSaveRequested={handleSaveClick}
             isSaved={isSaved}
             onContentChange={handleClauseContentChange}
-            partyAName={fieldData.party_a_name || fieldData.provider_name || fieldData.disclosing_party || 'Party A'}
-            partyBName={fieldData.party_b_name || fieldData.customer_name || fieldData.receiving_party || 'Party B'}
-            partyASignatory={fieldData.party_a_signatory_name || fieldData.provider_signatory_name || 'Authorized Officer'}
-            partyBSignatory={fieldData.party_b_signatory_name || fieldData.customer_signatory_name || 'Authorized Officer'}
+            partyAName={
+              fieldData.party_a_name ||
+              fieldData.provider_company_name ||
+              fieldData.licensor_entity_name ||
+              fieldData.client_company_name ||
+              fieldData.company_legal_name ||
+              fieldData.provider_name ||
+              'First Party'
+            }
+            partyBName={
+              fieldData.party_b_name ||
+              fieldData.customer_company_name ||
+              fieldData.licensee_entity_name ||
+              fieldData.consultant_name_or_firm ||
+              fieldData.customer_name ||
+              'Counterparty'
+            }
+            partyASignatory={
+              fieldData.party_a_signatory_name ||
+              fieldData.provider_signatory_name ||
+              fieldData.licensor_signatory_name ||
+              fieldData.client_signatory_name ||
+              'Authorized Representative'
+            }
+            partyBSignatory={
+              fieldData.party_b_signatory_name ||
+              fieldData.customer_signatory_name ||
+              fieldData.licensee_signatory_name ||
+              fieldData.consultant_signatory_name ||
+              'Authorized Representative'
+            }
+            partyATitle={
+              fieldData.party_a_signatory_title ||
+              fieldData.provider_signatory_title ||
+              fieldData.licensor_signatory_title ||
+              fieldData.client_signatory_title ||
+              'Authorized Representative'
+            }
+            partyBTitle={
+              fieldData.party_b_signatory_title ||
+              fieldData.customer_signatory_title ||
+              fieldData.licensee_signatory_title ||
+              fieldData.consultant_signatory_title ||
+              'Authorized Representative'
+            }
           />
         </div>
 
