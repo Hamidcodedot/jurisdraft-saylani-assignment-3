@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#F8FAFC] text-[#0F172A] antialiased selection:bg-brand-100 selection:text-brand-900;
+  }
+}
+
+/* Authentic Document Typography */
+.legal-document {
+  font-family: 'Newsreader', 'Merriweather', 'Georgia', serif;
+  line-height: 1.75;
+  color: #1E293B;
+}
+
+.legal-document h1 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.legal-document h2,
+.legal-document h3 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0F172A;
+}
+
+/* Subtle Variable Highlight in Live Document */
+.doc-var-highlight {
+  background-color: #FEF3C7;
+  color: #92400E;
+  padding: 1px 4px;
+  border-radius: 3px;
+  border-bottom: 1.5px solid #F59E0B;
+  font-weight: 500;
+}
+
+.doc-var-pending {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+  padding: 1px 4px;
+  border-radius: 3px;
+  border-bottom: 1.5px dashed #EF4444;
+  font-weight: 500;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .legal-document {
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

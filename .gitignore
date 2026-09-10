@@ -1,0 +1,38 @@
+# Environments & Secrets
+.env
+*.env.local
+backend/venv/
+venv/
+ENV/
+
+# Databases & Runtime Data
+*.db
+*.sqlite
+*.sqlite3
+backend/prelegal.db
+
+# Node & Next.js
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+.next/
+out/
+.npm
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Operating System
+.DS_Store
+Thumbs.db
+*.swp
+*.log
