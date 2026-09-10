@@ -170,6 +170,8 @@
   }
 
   .document-page-sheet {
+    transform: none !important;
+    -webkit-transform: none !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
@@ -192,6 +194,32 @@
   .document-page-sheet:last-of-type {
     page-break-after: auto !important;
     break-after: auto !important;
+  }
+
+  /* Ensure signature images are completely visible, unfiltered, and rendered at true resolution */
+  img,
+  .signature-preview-image,
+  .document-page-sheet img {
+    filter: none !important;
+    -webkit-filter: none !important;
+    visibility: visible !important;
+    display: block !important;
+    max-height: 52px !important;
+    height: auto !important;
+    object-fit: contain !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure signature lines and borders remain dark and visible in print */
+  .border-b,
+  .border-slate-600,
+  .border-slate-700,
+  .border-slate-400,
+  .border-slate-300 {
+    border-color: #0F172A !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .page-break-indicator {

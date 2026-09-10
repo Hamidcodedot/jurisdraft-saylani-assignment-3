@@ -156,6 +156,8 @@ class PDFService:
         # Parse and translate Markdown lines
         lines = markdown_text.split("\n")
         current_party = None
+        injected_party_a = False
+        injected_party_b = False
 
         for line in lines:
             line_str = line.strip()
@@ -188,43 +190,93 @@ class PDFService:
             elif line_str == "---" or line_str == "***":
                 story.append(Spacer(1, 4))
                 story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#E2E8F0"), spaceAfter=6))
-            
-            # Track execution block parties
-            elif any(line_str.upper().startswith(p) for p in ["PARTY A:", "PARTY 1:", "DISCLOSING PARTY:", "PROVIDER:", "COMPANY:"]):
-                current_party = "A"
-                formatted = self._format_inline_markdown(line_str)
-                story.append(Paragraph(formatted, body_style))
 
-            elif any(line_str.upper().startswith(p) for p in ["PARTY B:", "PARTY 2:", "RECEIVING PARTY:", "CUSTOMER:", "CLIENT:", "RECIPIENT:"]):
-                current_party = "B"
-                formatted = self._format_inline_markdown(line_str)
-                story.append(Paragraph(formatted, body_style))
+            else:
+                # Strip markdown asterisks, underscores, and backticks to inspect section/party accurately
+                clean_line = re.sub(r"[\*_#`]", "", line_str).strip()
+                clean_upper = clean_line.upper()
 
-            # Signature Line injection
-            elif line_str.startswith("By:") or line_str.startswith("Signature:"):
-                sig_flowable = None
-                if current_party == "A" and party_a_signature:
-                    sig_flowable = self._make_signature_image(party_a_signature)
-                elif current_party == "B" and party_b_signature:
-                    sig_flowable = self._make_signature_image(party_b_signature)
+                # Track execution block parties (supports Party A, Provider, Licensor, Client, Company)
+                if any(clean_upper.startswith(p) for p in [
+                    "PARTY A:", "PARTY 1:", "DISCLOSING PARTY:", "PROVIDER:", "LICENSOR:", "CLIENT:", "COMPANY:", "FIRST PARTY:"
+                ]):
+                    current_party = "A"
+                    formatted = self._format_inline_markdown(line_str)
+                    story.append(Paragraph(formatted, body_style))
 
+                # Track Party B (supports Party B, Customer, Licensee, Consultant, Recipient)
+                elif any(clean_upper.startswith(p) for p in [
+                    "PARTY B:", "PARTY 2:", "RECEIVING PARTY:", "CUSTOMER:", "LICENSEE:", "CONSULTANT:", "RECIPIENT:", "COUNTERPARTY:"
+                ]):
+                    current_party = "B"
+                    formatted = self._format_inline_markdown(line_str)
+                    story.append(Paragraph(formatted, body_style))
+
+                # Signature Line injection (supports By:, Signature:, Authorized Signature:)
+                elif any(clean_upper.startswith(s) for s in ["BY:", "SIGNATURE:", "AUTHORIZED SIGNATURE:"]):
+                    sig_flowable = None
+                    if (current_party == "A" or current_party is None) and party_a_signature and not injected_party_a:
+                        sig_flowable = self._make_signature_image(party_a_signature)
+                        if sig_flowable:
+                            story.append(Spacer(1, 4))
+                            story.append(sig_flowable)
+                            story.append(Spacer(1, 2))
+                            story.append(Paragraph("<font size=7 color='#047857'>✓ <i>Digitally Verified Electronic Signature</i></font>", disclaimer_box_style))
+                            story.append(Spacer(1, 2))
+                            injected_party_a = True
+                    elif current_party == "B" and party_b_signature and not injected_party_b:
+                        sig_flowable = self._make_signature_image(party_b_signature)
+                        if sig_flowable:
+                            story.append(Spacer(1, 4))
+                            story.append(sig_flowable)
+                            story.append(Spacer(1, 2))
+                            story.append(Paragraph("<font size=7 color='#047857'>✓ <i>Digitally Verified Electronic Signature</i></font>", disclaimer_box_style))
+                            story.append(Spacer(1, 2))
+                            injected_party_b = True
+
+                    formatted = self._format_inline_markdown(line_str)
+                    story.append(Paragraph(formatted, body_style))
+
+                # List item or Recital bullet
+                elif line_str.startswith("- ") or line_str.startswith("* "):
+                    clean_text = line_str[2:].strip()
+                    formatted = self._format_inline_markdown(clean_text)
+                    story.append(Paragraph(f"• &nbsp; {formatted}", body_style))
+                
+                # Regular Paragraph
+                else:
+                    formatted = self._format_inline_markdown(line_str)
+                    story.append(Paragraph(formatted, body_style))
+
+        # Fallback Guarantee: If signatures were provided but could not be embedded inline (e.g. Privacy Policy or custom templates)
+        if (party_a_signature and not injected_party_a) or (party_b_signature and not injected_party_b):
+            story.append(Spacer(1, 14))
+            story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#CBD5E1"), spaceAfter=10))
+            story.append(Paragraph("<b>FORMAL EXECUTION &amp; ELECTRONIC SIGNATURE RECORD</b>", h2_style))
+            story.append(Paragraph("<i>This document has been reviewed, approved, and digitally executed as of the Effective Date.</i>", disclaimer_box_style))
+            story.append(Spacer(1, 8))
+
+            if party_a_signature and not injected_party_a:
+                sig_flowable = self._make_signature_image(party_a_signature)
                 if sig_flowable:
+                    story.append(Paragraph("<b>AUTHORIZED SIGNATORY (PARTY A / COMPANY):</b>", body_style))
                     story.append(Spacer(1, 4))
                     story.append(sig_flowable)
-                    story.append(Paragraph("<i>[Digitally Verified Signature]</i>", disclaimer_box_style))
-                formatted = self._format_inline_markdown(line_str)
-                story.append(Paragraph(formatted, body_style))
+                    story.append(Spacer(1, 2))
+                    story.append(Paragraph("<font size=7 color='#047857'>✓ <i>Digitally Verified Electronic Signature</i></font>", disclaimer_box_style))
+                    story.append(Paragraph("By: ____________________________________", body_style))
+                    story.append(Spacer(1, 8))
 
-            # List item or Recital bullet
-            elif line_str.startswith("- ") or line_str.startswith("* "):
-                clean_text = line_str[2:].strip()
-                formatted = self._format_inline_markdown(clean_text)
-                story.append(Paragraph(f"• &nbsp; {formatted}", body_style))
-            
-            # Regular Paragraph
-            else:
-                formatted = self._format_inline_markdown(line_str)
-                story.append(Paragraph(formatted, body_style))
+            if party_b_signature and not injected_party_b:
+                sig_flowable = self._make_signature_image(party_b_signature)
+                if sig_flowable:
+                    story.append(Paragraph("<b>AUTHORIZED SIGNATORY (PARTY B / COUNTERPARTY):</b>", body_style))
+                    story.append(Spacer(1, 4))
+                    story.append(sig_flowable)
+                    story.append(Spacer(1, 2))
+                    story.append(Paragraph("<font size=7 color='#047857'>✓ <i>Digitally Verified Electronic Signature</i></font>", disclaimer_box_style))
+                    story.append(Paragraph("By: ____________________________________", body_style))
+                    story.append(Spacer(1, 8))
 
         # Build document
         doc.build(story, canvasmaker=NumberedCanvas)

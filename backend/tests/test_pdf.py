@@ -42,3 +42,38 @@ By: ______________________
     assert len(pdf_bytes) > 500
     assert pdf_bytes.startswith(b"%PDF-")
 
+def test_pdf_with_formatted_parties_and_fallback():
+    dummy_sig = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    # Test formatted party lines with bold asterisks as in actual templates
+    markdown_content = """# MUTUAL NON-DISCLOSURE AGREEMENT
+    
+### IN WITNESS WHEREOF
+**PARTY A: Apex Innovations Inc.**
+By: ____________________________________
+**PARTY B: Vanguard Enterprises LLC**
+By: ____________________________________
+"""
+    pdf_bytes = pdf_service.generate_pdf(
+        markdown_content,
+        "Test Real Template Signatures",
+        party_a_signature=dummy_sig,
+        party_b_signature=dummy_sig
+    )
+    assert isinstance(pdf_bytes, bytes)
+    assert len(pdf_bytes) > 500
+    assert pdf_bytes.startswith(b"%PDF-")
+
+    # Test unilateral document (Privacy Policy) with fallback signature record
+    policy_md = """# WEBSITE PRIVACY POLICY
+We respect your privacy and never sell personal data.
+"""
+    policy_pdf = pdf_service.generate_pdf(
+        policy_md,
+        "Test Privacy Policy Signature",
+        party_a_signature=dummy_sig
+    )
+    assert isinstance(policy_pdf, bytes)
+    assert len(policy_pdf) > 500
+    assert policy_pdf.startswith(b"%PDF-")
+
+

@@ -707,6 +707,7 @@ export default function ContractEditorPage() {
           <DocumentPreview
             documentTitle={documentTitle}
             templateName={template.name}
+            templateId={templateId}
             renderedMarkdown={renderedContent}
             completionPercentage={completionPercentage}
             documentId={documentId}

@@ -28,6 +28,7 @@ import { api } from '@/lib/api';
 interface DocumentPreviewProps {
   documentTitle: string;
   templateName: string;
+  templateId?: string;
   renderedMarkdown: string;
   completionPercentage: number;
   documentId?: string;
@@ -137,6 +138,7 @@ function htmlToMarkdown(html: string): string {
 export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
   documentTitle,
   templateName,
+  templateId,
   renderedMarkdown,
   completionPercentage,
   documentId,
@@ -156,10 +158,18 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
   const [isEditingLive, setIsEditingLive] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Check if document is a bilateral contract requiring execution signatures
-  const isSignableContract = useMemo(() => {
-    return /IN WITNESS WHEREOF|### SIGNATURES|\*\*PARTY A:|\*\*PROVIDER:|\*\*LICENSOR:|\*\*CLIENT:/i.test(renderedMarkdown);
-  }, [renderedMarkdown]);
+  // Determine if document is bilateral (two counterparties) or unilateral (corporate entity sign-off)
+  const isBilateral = useMemo(() => {
+    if (
+      templateId === 'privacy-policy' ||
+      templateId === 'terms-of-service' ||
+      /privacy policy|terms of service/i.test(documentTitle || templateName)
+    ) {
+      return false;
+    }
+    return /(?:\*\*PARTY B:|\*\*CUSTOMER:|\*\*LICENSEE:|\*\*CONSULTANT:|\*\*RECEIVING PARTY:|\*\*PARTY 2:)/i.test(renderedMarkdown) ||
+      (partyBName !== 'Party B' && partyBName !== 'Counterparty' && partyBName.trim().length > 0);
+  }, [templateId, documentTitle, templateName, renderedMarkdown, partyBName]);
 
   // E-Signature State (Strictly Optional Feature)
   const [enableDigitalSignatures, setEnableDigitalSignatures] = useState<boolean>(true);
@@ -233,11 +243,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
         partyB: null,
       };
 
-      if (documentId && !sigs.partyA && !sigs.partyB) {
-        await api.downloadDocumentPdf(documentId, documentTitle);
-      } else {
-        await api.exportDirectPdf(renderedMarkdown, documentTitle, sigs);
-      }
+      await api.exportDirectPdf(renderedMarkdown, documentTitle, sigs);
       showToast('✓ PDF download complete');
     } catch (err) {
       alert('Failed to generate PDF. Please verify backend connection.');
@@ -318,10 +324,10 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
     return pages.length > 0 ? pages : [renderedMarkdown];
   }, [renderedMarkdown]);
 
-  // Filter out raw markdown signature lines on the last page of a signable contract to avoid duplication
+  // Filter out raw markdown signature lines on the last page of a bilateral contract to avoid duplication
   const getDisplayPageText = (text: string, isLast: boolean) => {
-    if (!isSignableContract || !isLast) return text;
-    const regex = /(?:###\s*(?:IN WITNESS WHEREOF|SIGNATURES)|\*\*PARTY A:|\*\*PROVIDER:|\*\*LICENSOR:|\*\*CLIENT:)/i;
+    if (!isBilateral || !isLast) return text;
+    const regex = /(?:###\s*(?:IN WITNESS WHEREOF|SIGNATURES|EXECUTION)|\*\*PARTY A:|\*\*PROVIDER:|\*\*LICENSOR:|\*\*CLIENT:)/i;
     const match = text.search(regex);
     if (match !== -1) {
       let clean = text.substring(0, match).trim();
@@ -474,30 +480,28 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
             </button>
           </div>
 
-          {/* Optional E-Signature Toggle */}
-          {isSignableContract && (
-            <button
-              type="button"
-              onClick={() => {
-                setEnableDigitalSignatures((prev) => !prev);
-                showToast(!enableDigitalSignatures ? 'Digital E-Signatures enabled (Optional)' : 'E-Signatures disabled (Physical wet-ink signing mode)');
-              }}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border transition ${
-                enableDigitalSignatures
-                  ? 'bg-amber-50 text-amber-950 border-amber-300 shadow-2xs'
-                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-              }`}
-              title="Toggle optional electronic signatures"
-            >
-              <PenTool className={`w-3.5 h-3.5 ${enableDigitalSignatures ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
-              <span className="hidden sm:inline">E-Signature:</span>
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                enableDigitalSignatures ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
-              }`}>
-                {enableDigitalSignatures ? 'Optional (Active)' : 'Off (Ink Only)'}
-              </span>
-            </button>
-          )}
+          {/* Optional E-Signature Toggle - Available across all templates */}
+          <button
+            type="button"
+            onClick={() => {
+              setEnableDigitalSignatures((prev) => !prev);
+              showToast(!enableDigitalSignatures ? 'Digital E-Signatures enabled (Optional)' : 'E-Signatures disabled (Physical wet-ink signing mode)');
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border transition ${
+              enableDigitalSignatures
+                ? 'bg-amber-50 text-amber-950 border-amber-300 shadow-2xs'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }`}
+            title="Toggle optional electronic signatures"
+          >
+            <PenTool className={`w-3.5 h-3.5 ${enableDigitalSignatures ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
+            <span className="hidden sm:inline">E-Signature:</span>
+            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+              enableDigitalSignatures ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
+            }`}>
+              {enableDigitalSignatures ? 'Optional (Active)' : 'Off (Ink Only)'}
+            </span>
+          </button>
         </div>
 
         {/* Right Action & Export Buttons */}
@@ -622,198 +626,319 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
                   )}
 
                   {/* On the Last Page of Signable Agreements: Optional Execution Block */}
-                  {isSignableContract && isLastPage && (
+                  {/* Execution Block on Final Document Page: Universal Support for Bilateral and Unilateral Documents */}
+                  {isLastPage && (
                     <div className="mt-8 pt-6 border-t border-slate-300">
                       
-                      {/* Section Heading & Optional Mode Switch */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-2 border-b border-slate-200 select-none">
-                        <div>
-                          <div className="text-xs font-bold font-sans tracking-wider uppercase text-slate-900">
-                            IN WITNESS WHEREOF, the Parties have executed this Agreement
-                          </div>
-                          <div className="text-[10px] text-slate-500 font-sans mt-0.5">
-                            Traditional physical wet-ink signing or optional digital e-signature
-                          </div>
-                        </div>
-
-                        {/* Optional Mode Toggle Pill inside block */}
-                        <div className="flex items-center gap-2 no-print">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEnableDigitalSignatures(!enableDigitalSignatures);
-                              showToast(!enableDigitalSignatures ? 'Digital E-Signatures enabled (Optional)' : 'E-Signatures disabled (Physical wet-ink signing)');
-                            }}
-                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-sans font-medium border transition ${
-                              enableDigitalSignatures
-                                ? 'bg-amber-50 text-amber-950 border-amber-300'
-                                : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
-                            }`}
-                            title="Toggle between physical wet-ink signing and optional digital e-signatures"
-                          >
-                            <PenTool className={`w-3 h-3 ${enableDigitalSignatures ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
-                            <span>E-Signature:</span>
-                            <span className={`font-bold ${enableDigitalSignatures ? 'text-emerald-700' : 'text-slate-500'}`}>
-                              {enableDigitalSignatures ? 'Optional (Active)' : 'Off (Physical Ink)'}
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Dual-Column Traditional & Optional Digital Signatures */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-serif">
-                        
-                        {/* PARTY A EXECUTION */}
-                        <div className="space-y-2">
-                          <div className="text-xs font-bold text-slate-900 uppercase tracking-wide font-sans">
-                            PARTY A: {partyAName}
-                          </div>
-                          
-                          {/* Signature Line Area */}
-                          <div className="pt-2">
-                            {enableDigitalSignatures && partyASignature ? (
-                              <div className="relative group mb-1">
-                                <img
-                                  src={partyASignature}
-                                  alt="Party A Signature"
-                                  className="h-11 object-contain filter contrast-125 mb-1"
-                                />
-                                <div className="border-b border-slate-700 w-full mb-1" />
-                                <div className="flex items-center justify-between text-[10px] text-slate-500 font-sans no-print">
-                                  <span className="text-emerald-700 font-medium flex items-center gap-1">
-                                    ✓ Digitally Signed (Optional)
-                                  </span>
-                                  <div className="flex items-center gap-2">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveSigningParty('Party A');
-                                        setSignatureModalOpen(true);
-                                      }}
-                                      className="text-slate-500 hover:text-slate-900 underline"
-                                    >
-                                      Change
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setPartyASignature(null);
-                                        showToast(`Party A signature cleared`);
-                                      }}
-                                      className="text-slate-400 hover:text-red-600 underline"
-                                    >
-                                      Remove
-                                    </button>
-                                  </div>
-                                </div>
+                      {/* Bilateral Agreement Execution (NDA, SaaS, License, Consulting) */}
+                      {isBilateral ? (
+                        <>
+                          {/* Section Heading & Optional Mode Switch */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-2 border-b border-slate-200 select-none">
+                            <div>
+                              <div className="text-xs font-bold font-sans tracking-wider uppercase text-slate-900">
+                                IN WITNESS WHEREOF, the Parties have executed this Agreement
                               </div>
-                            ) : (
-                              <div className="mb-2">
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-xs text-slate-700 font-sans font-medium">By:</span>
-                                  {enableDigitalSignatures && (
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveSigningParty('Party A');
-                                        setSignatureModalOpen(true);
-                                      }}
-                                      className="text-[11px] font-sans text-amber-900 hover:text-amber-950 font-medium flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 transition no-print"
-                                      title="Click to add optional electronic signature"
-                                    >
-                                      <PenTool className="w-3 h-3 text-[#D4AF37]" />
-                                      <span>+ Add E-Signature (Optional)</span>
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="border-b border-slate-600 w-full h-4 mb-1" />
+                              <div className="text-[10px] text-slate-500 font-sans mt-0.5">
+                                Traditional physical wet-ink signing or optional digital e-signature
                               </div>
-                            )}
+                            </div>
 
-                            <div className="text-[11px] text-slate-700 space-y-1 mt-2">
-                              <div><span className="font-sans font-semibold text-slate-900">Name:</span> {partyASignatory}</div>
-                              <div><span className="font-sans font-semibold text-slate-900">Title:</span> {partyATitle}</div>
-                              <div><span className="font-sans font-semibold text-slate-900">Date:</span> {partyASignature ? new Date().toISOString().split('T')[0] : '_________________________'}</div>
+                            {/* Optional Mode Toggle Pill inside block */}
+                            <div className="flex items-center gap-2 no-print">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEnableDigitalSignatures(!enableDigitalSignatures);
+                                  showToast(!enableDigitalSignatures ? 'Digital E-Signatures enabled (Optional)' : 'E-Signatures disabled (Physical wet-ink signing)');
+                                }}
+                                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-sans font-medium border transition ${
+                                  enableDigitalSignatures
+                                    ? 'bg-amber-50 text-amber-950 border-amber-300'
+                                    : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                                }`}
+                                title="Toggle between physical wet-ink signing and optional digital e-signatures"
+                              >
+                                <PenTool className={`w-3 h-3 ${enableDigitalSignatures ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
+                                <span>E-Signature:</span>
+                                <span className={`font-bold ${enableDigitalSignatures ? 'text-emerald-700' : 'text-slate-500'}`}>
+                                  {enableDigitalSignatures ? 'Optional (Active)' : 'Off (Physical Ink)'}
+                                </span>
+                              </button>
                             </div>
                           </div>
-                        </div>
 
-                        {/* PARTY B EXECUTION */}
-                        <div className="space-y-2">
-                          <div className="text-xs font-bold text-slate-900 uppercase tracking-wide font-sans">
-                            PARTY B: {partyBName}
-                          </div>
-                          
-                          {/* Signature Line Area */}
-                          <div className="pt-2">
-                            {enableDigitalSignatures && partyBSignature ? (
-                              <div className="relative group mb-1">
-                                <img
-                                  src={partyBSignature}
-                                  alt="Party B Signature"
-                                  className="h-11 object-contain filter contrast-125 mb-1"
-                                />
-                                <div className="border-b border-slate-700 w-full mb-1" />
-                                <div className="flex items-center justify-between text-[10px] text-slate-500 font-sans no-print">
-                                  <span className="text-emerald-700 font-medium flex items-center gap-1">
-                                    ✓ Digitally Signed (Optional)
-                                  </span>
-                                  <div className="flex items-center gap-2">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveSigningParty('Party B');
-                                        setSignatureModalOpen(true);
-                                      }}
-                                      className="text-slate-500 hover:text-slate-900 underline"
-                                    >
-                                      Change
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setPartyBSignature(null);
-                                        showToast(`Party B signature cleared`);
-                                      }}
-                                      className="text-slate-400 hover:text-red-600 underline"
-                                    >
-                                      Remove
-                                    </button>
+                          {/* Dual-Column Traditional & Optional Digital Signatures */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-serif">
+                            
+                            {/* PARTY A EXECUTION */}
+                            <div className="space-y-2">
+                              <div className="text-xs font-bold text-slate-900 uppercase tracking-wide font-sans">
+                                PARTY A: {partyAName}
+                              </div>
+                              
+                              {/* Signature Line Area */}
+                              <div className="pt-2">
+                                {enableDigitalSignatures && partyASignature ? (
+                                  <div className="relative group mb-1">
+                                    <img
+                                      src={partyASignature}
+                                      alt="Party A Signature"
+                                      className="h-11 object-contain signature-preview-image mb-1"
+                                    />
+                                    <div className="border-b border-slate-700 w-full mb-1" />
+                                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-sans no-print">
+                                      <span className="text-emerald-700 font-medium flex items-center gap-1">
+                                        ✓ Digitally Signed (Optional)
+                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setActiveSigningParty('Party A');
+                                            setSignatureModalOpen(true);
+                                          }}
+                                          className="text-slate-500 hover:text-slate-900 underline"
+                                        >
+                                          Change
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setPartyASignature(null);
+                                            showToast(`Party A signature cleared`);
+                                          }}
+                                          className="text-slate-400 hover:text-red-600 underline"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="mb-2">
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-xs text-slate-700 font-sans font-medium">By:</span>
-                                  {enableDigitalSignatures && (
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setActiveSigningParty('Party B');
-                                        setSignatureModalOpen(true);
-                                      }}
-                                      className="text-[11px] font-sans text-amber-900 hover:text-amber-950 font-medium flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 transition no-print"
-                                      title="Click to add optional electronic signature"
-                                    >
-                                      <PenTool className="w-3 h-3 text-[#D4AF37]" />
-                                      <span>+ Add E-Signature (Optional)</span>
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="border-b border-slate-600 w-full h-4 mb-1" />
-                              </div>
-                            )}
+                                ) : (
+                                  <div className="mb-2">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <span className="text-xs text-slate-700 font-sans font-medium">By:</span>
+                                      {enableDigitalSignatures && (
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setActiveSigningParty('Party A');
+                                            setSignatureModalOpen(true);
+                                          }}
+                                          className="text-[11px] font-sans text-amber-900 hover:text-amber-950 font-medium flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 transition no-print"
+                                          title="Click to add optional electronic signature"
+                                        >
+                                          <PenTool className="w-3 h-3 text-[#D4AF37]" />
+                                          <span>+ Add E-Signature (Optional)</span>
+                                        </button>
+                                      )}
+                                    </div>
+                                    <div className="border-b border-slate-600 w-full h-4 mb-1" />
+                                  </div>
+                                )}
 
-                            <div className="text-[11px] text-slate-700 space-y-1 mt-2">
-                              <div><span className="font-sans font-semibold text-slate-900">Name:</span> {partyBSignatory}</div>
-                              <div><span className="font-sans font-semibold text-slate-900">Title:</span> {partyBTitle}</div>
-                              <div><span className="font-sans font-semibold text-slate-900">Date:</span> {partyBSignature ? new Date().toISOString().split('T')[0] : '_________________________'}</div>
+                                <div className="text-[11px] text-slate-700 space-y-1 mt-2">
+                                  <div><span className="font-sans font-semibold text-slate-900">Name:</span> {partyASignatory}</div>
+                                  <div><span className="font-sans font-semibold text-slate-900">Title:</span> {partyATitle}</div>
+                                  <div><span className="font-sans font-semibold text-slate-900">Date:</span> {partyASignature ? new Date().toISOString().split('T')[0] : '_________________________'}</div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* PARTY B EXECUTION */}
+                            <div className="space-y-2">
+                              <div className="text-xs font-bold text-slate-900 uppercase tracking-wide font-sans">
+                                PARTY B: {partyBName}
+                              </div>
+                              
+                              {/* Signature Line Area */}
+                              <div className="pt-2">
+                                {enableDigitalSignatures && partyBSignature ? (
+                                  <div className="relative group mb-1">
+                                    <img
+                                      src={partyBSignature}
+                                      alt="Party B Signature"
+                                      className="h-11 object-contain signature-preview-image mb-1"
+                                    />
+                                    <div className="border-b border-slate-700 w-full mb-1" />
+                                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-sans no-print">
+                                      <span className="text-emerald-700 font-medium flex items-center gap-1">
+                                        ✓ Digitally Signed (Optional)
+                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setActiveSigningParty('Party B');
+                                            setSignatureModalOpen(true);
+                                          }}
+                                          className="text-slate-500 hover:text-slate-900 underline"
+                                        >
+                                          Change
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setPartyBSignature(null);
+                                            showToast(`Party B signature cleared`);
+                                          }}
+                                          className="text-slate-400 hover:text-red-600 underline"
+                                        >
+                                          Remove
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="mb-2">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <span className="text-xs text-slate-700 font-sans font-medium">By:</span>
+                                      {enableDigitalSignatures && (
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setActiveSigningParty('Party B');
+                                            setSignatureModalOpen(true);
+                                          }}
+                                          className="text-[11px] font-sans text-amber-900 hover:text-amber-950 font-medium flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 transition no-print"
+                                          title="Click to add optional electronic signature"
+                                        >
+                                          <PenTool className="w-3 h-3 text-[#D4AF37]" />
+                                          <span>+ Add E-Signature (Optional)</span>
+                                        </button>
+                                      )}
+                                    </div>
+                                    <div className="border-b border-slate-600 w-full h-4 mb-1" />
+                                  </div>
+                                )}
+
+                                <div className="text-[11px] text-slate-700 space-y-1 mt-2">
+                                  <div><span className="font-sans font-semibold text-slate-900">Name:</span> {partyBSignatory}</div>
+                                  <div><span className="font-sans font-semibold text-slate-900">Title:</span> {partyBTitle}</div>
+                                  <div><span className="font-sans font-semibold text-slate-900">Date:</span> {partyBSignature ? new Date().toISOString().split('T')[0] : '_________________________'}</div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </>
+                      ) : (
+                        /* Unilateral Corporate Adoption & Legal Sign-off (Privacy Policy, Terms of Service) */
+                        <>
+                          {/* Section Heading & Optional Mode Switch */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-2 border-b border-slate-200 select-none">
+                            <div>
+                              <div className="text-xs font-bold font-sans tracking-wider uppercase text-slate-900">
+                                CORPORATE ADOPTION &amp; AUTHORIZED LEGAL SIGN-OFF
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-sans mt-0.5">
+                                Official publication sign-off, internal governance approval, or compliance verification
+                              </div>
+                            </div>
+
+                            {/* Optional Mode Toggle Pill inside block */}
+                            <div className="flex items-center gap-2 no-print">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEnableDigitalSignatures(!enableDigitalSignatures);
+                                  showToast(!enableDigitalSignatures ? 'Digital E-Signatures enabled (Optional)' : 'E-Signatures disabled (Physical wet-ink signing)');
+                                }}
+                                className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-sans font-medium border transition ${
+                                  enableDigitalSignatures
+                                    ? 'bg-amber-50 text-amber-950 border-amber-300'
+                                    : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                                }`}
+                                title="Toggle between physical wet-ink signing and optional digital e-signatures"
+                              >
+                                <PenTool className={`w-3 h-3 ${enableDigitalSignatures ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
+                                <span>E-Signature:</span>
+                                <span className={`font-bold ${enableDigitalSignatures ? 'text-emerald-700' : 'text-slate-500'}`}>
+                                  {enableDigitalSignatures ? 'Optional (Active)' : 'Off (Physical Ink)'}
+                                </span>
+                              </button>
                             </div>
                           </div>
-                        </div>
 
-                      </div>
+                          {/* Single Focused Executive Sign-Off Card */}
+                          <div className="max-w-md bg-slate-50/70 p-5 rounded-lg border border-slate-200 font-serif">
+                            <div className="text-xs font-bold text-slate-900 uppercase tracking-wide font-sans mb-1">
+                              ADOPTED &amp; EXECUTED FOR: {partyAName || 'Enterprise Entity'}
+                            </div>
+                            <div className="text-[11px] text-slate-500 font-sans mb-3">
+                              By authorized officer on behalf of the adopting organization.
+                            </div>
+
+                            <div className="pt-2">
+                              {enableDigitalSignatures && partyASignature ? (
+                                <div className="relative group mb-1">
+                                  <img
+                                    src={partyASignature}
+                                    alt="Authorized Signature"
+                                    className="h-11 object-contain signature-preview-image mb-1"
+                                  />
+                                  <div className="border-b border-slate-700 w-full mb-1" />
+                                  <div className="flex items-center justify-between text-[10px] text-slate-500 font-sans no-print">
+                                    <span className="text-emerald-700 font-medium flex items-center gap-1">
+                                      ✓ Digitally Signed &amp; Verified
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setActiveSigningParty('Party A');
+                                          setSignatureModalOpen(true);
+                                        }}
+                                        className="text-slate-500 hover:text-slate-900 underline"
+                                      >
+                                        Change
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setPartyASignature(null);
+                                          showToast('Signature cleared');
+                                        }}
+                                        className="text-slate-400 hover:text-red-600 underline"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="mb-2">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs text-slate-700 font-sans font-medium">Authorized Signature:</span>
+                                    {enableDigitalSignatures && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setActiveSigningParty('Party A');
+                                          setSignatureModalOpen(true);
+                                        }}
+                                        className="text-[11px] font-sans text-amber-900 hover:text-amber-950 font-medium flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 border border-amber-200 transition no-print"
+                                        title="Click to add optional electronic signature"
+                                      >
+                                        <PenTool className="w-3 h-3 text-[#D4AF37]" />
+                                        <span>+ Add E-Signature (Optional)</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                  <div className="border-b border-slate-600 w-full h-4 mb-1" />
+                                </div>
+                              )}
+
+                              <div className="text-[11px] text-slate-700 space-y-1 mt-2">
+                                <div><span className="font-sans font-semibold text-slate-900">Signatory:</span> {partyASignatory || 'Corporate Counsel'}</div>
+                                <div><span className="font-sans font-semibold text-slate-900">Title:</span> {partyATitle || 'Authorized Representative'}</div>
+                                <div><span className="font-sans font-semibold text-slate-900">Date:</span> {partyASignature ? new Date().toISOString().split('T')[0] : '_________________________'}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
 
