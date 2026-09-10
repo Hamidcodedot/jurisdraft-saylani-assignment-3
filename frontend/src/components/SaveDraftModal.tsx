@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { X, ShieldCheck, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
@@ -200,7 +201,15 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
         {/* Footer */}
         <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 text-center">
           <p className="text-[11px] text-slate-500">
-            By signing up, you acknowledge that JurisDraft is an automated documentation drafting platform and not formal legal counsel.
+            By continuing, you agree to JurisDraft&apos;s{' '}
+            <Link href="/terms" target="_blank" className="underline hover:text-slate-700 font-medium">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" target="_blank" className="underline hover:text-slate-700 font-medium">
+              Privacy Policy
+            </Link>
+            . JurisDraft is an automated drafting platform, not a law firm.
           </p>
         </div>
 

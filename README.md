@@ -70,7 +70,18 @@ All templates are located in `templates/` formatted in clean Markdown with inter
 
 ---
 
-## 4. Class 9 & Class 10 Alignment
+## 4. Legal & Regulatory Compliance Suite
+
+JurisDraft includes dedicated, publication-grade enterprise compliance pages accessible across the application:
+
+- **[`/terms`](frontend/src/app/terms/page.tsx)**: **Enterprise Terms of Platform Service** — Governs software vendor status, 100% customer intellectual property ownership, multi-user vault authorization, warranty disclaimers, liability caps, and Delaware governing law.
+- **[`/privacy`](frontend/src/app/privacy/page.tsx)**: **Privacy Policy & Data Protection** — Features the **Absolute Enterprise Privacy Guarantee: Zero AI Model Training on Customer Data**, GDPR/CCPA subject rights, stateless in-memory inference processing, and user-directed vault data purging.
+- **[`/disclaimer`](frontend/src/app/disclaimer/page.tsx)**: **Legal Practice & Representation Disclaimer** — Statutory disclosure establishing software entity classification, Unauthorized Practice of Law (UPL) safeguards, absence of attorney-client privilege, and the mandatory 4-step counsel review protocol before contract execution.
+- **[`/security`](frontend/src/app/security/page.tsx)**: **Enterprise Security Architecture** — In-depth technical breakdown of TLS 1.3 in-transit and AES-256 at-rest encryption, row-level tenant vault isolation, stateless sub-second Cerebras inference, and container hardening.
+
+---
+
+## 5. Class 9 & Class 10 Alignment
 
 JurisDraft satisfies every engineering requirement taught across the curriculum:
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Shield, FileCheck, Zap, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { TemplateCard } from '@/components/TemplateCard';
+import { BrandLogo } from '@/components/BrandLogo';
 import { api, TemplateSummary } from '@/lib/api';
 
 export default function HomePage() {
@@ -213,18 +214,161 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#0A1128] text-white py-12 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-400">
-          <div className="flex items-center gap-3">
-            <span className="font-serif text-lg font-bold text-[#D4AF37]">JurisDraft</span>
-            <span>•</span>
-            <span>Enterprise Legal Document Automation</span>
+      {/* Enterprise Institutional Footer */}
+      <footer className="bg-[#0C1838] text-white pt-16 pb-12 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800/80">
+            
+            {/* Column 1: Brand & Mandatory Legal Notice */}
+            <div className="space-y-4">
+              <BrandLogo size="md" theme="dark" showText={true} />
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Autonomous legal document automation and corporate agreement repository engineered for global enterprise operations.
+              </p>
+              <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-lg text-[11px] text-slate-400 space-y-1">
+                <span className="font-bold text-[#D4AF37] uppercase tracking-wider block text-[10px]">
+                  Entity Classification Notice
+                </span>
+                <p className="text-slate-300">
+                  JurisDraft is a software technology vendor, not a law firm, and does not provide legal representation. Documents are non-binding preliminary drafts.
+                </p>
+              </div>
+            </div>
+
+            {/* Column 2: Standard Agreement Templates */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4 border-b border-slate-800 pb-2">
+                Standard Agreements
+              </h4>
+              <ul className="space-y-2.5 text-xs text-slate-400">
+                <li>
+                  <Link href="/editor/mutual-nda" className="hover:text-white transition">
+                    Mutual Non-Disclosure Agreement (NDA)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/editor/cloud-service-agreement" className="hover:text-white transition">
+                    Cloud Service Agreement (SaaS / SLA)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/editor/software-license-agreement" className="hover:text-white transition">
+                    Software License Agreement (IP)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/editor/consulting-agreement" className="hover:text-white transition">
+                    Independent Consulting Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/editor/terms-of-service" className="hover:text-white transition">
+                    Website Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/editor/privacy-policy" className="hover:text-white transition">
+                    Standard Privacy Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Legal & Regulatory */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4 border-b border-slate-800 pb-2">
+                Legal &amp; Compliance
+              </h4>
+              <ul className="space-y-2.5 text-xs text-slate-400">
+                <li>
+                  <Link href="/terms" className="hover:text-[#D4AF37] transition font-medium">
+                    Terms of Platform Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-[#D4AF37] transition font-medium">
+                    Privacy Policy &amp; Zero Training
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/disclaimer" className="hover:text-[#D4AF37] transition font-medium">
+                    Legal Practice Disclaimer
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/security" className="hover:text-[#D4AF37] transition font-medium">
+                    Security Architecture
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 4: Platform & Developer Operations */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4 border-b border-slate-800 pb-2">
+                Platform &amp; Architecture
+              </h4>
+              <ul className="space-y-2.5 text-xs text-slate-400">
+                <li>
+                  <Link href="/documents" className="hover:text-white transition">
+                    Corporate Document Vault
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="http://localhost:8000/docs"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-white transition inline-flex items-center gap-1"
+                  >
+                    <span>REST API Documentation</span>
+                    <span className="text-[10px] text-slate-500 font-mono">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="http://localhost:8000/api/health"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-white transition inline-flex items-center gap-1"
+                  >
+                    <span>System Health Endpoint</span>
+                    <span className="text-[10px] text-slate-500 font-mono">↗</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://commonpaper.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-white transition inline-flex items-center gap-1"
+                  >
+                    <span>Common Paper Open Standards</span>
+                    <span className="text-[10px] text-slate-500 font-mono">↗</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
 
-          <div>
-            Templates curated under Creative Commons Attribution 4.0 International (CC BY 4.0).
+          {/* Bottom Row */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div>
+              &copy; 2026 JurisDraft SaaS. All rights reserved. Base templates curated under Creative Commons Attribution 4.0 International (CC BY 4.0).
+            </div>
+            <div className="flex items-center gap-4 text-slate-400 text-[11px]">
+              <Link href="/terms" className="hover:text-white transition">Terms</Link>
+              <span>•</span>
+              <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
+              <span>•</span>
+              <Link href="/disclaimer" className="hover:text-white transition">Disclaimer</Link>
+              <span>•</span>
+              <Link href="/security" className="hover:text-white transition">Security</Link>
+            </div>
           </div>
+
         </div>
       </footer>
 
