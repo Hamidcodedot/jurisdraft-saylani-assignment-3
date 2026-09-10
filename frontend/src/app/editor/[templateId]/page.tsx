@@ -294,6 +294,8 @@ export default function ContractEditorPage() {
 
           <div className="flex items-center gap-2 min-w-0">
             <input
+              id="document-title-input"
+              name="documentTitle"
               type="text"
               value={documentTitle}
               onChange={(e) => {
@@ -471,7 +473,7 @@ export default function ContractEditorPage() {
                   {partyFields.map((f) => (
                     <div key={f.key} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">
+                        <label htmlFor={f.key} className="text-[11px] font-bold text-slate-700">
                           {f.label}
                         </label>
                         {fieldData[f.key] ? (
@@ -481,6 +483,8 @@ export default function ContractEditorPage() {
                         )}
                       </div>
                       <input
+                        id={f.key}
+                        name={f.key}
                         type="text"
                         value={fieldData[f.key] || ''}
                         onChange={(e) => handleFormFieldChange(f.key, e.target.value)}
@@ -502,7 +506,7 @@ export default function ContractEditorPage() {
                   {governanceFields.map((f) => (
                     <div key={f.key} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">
+                        <label htmlFor={f.key} className="text-[11px] font-bold text-slate-700">
                           {f.label}
                         </label>
                         {fieldData[f.key] ? (
@@ -512,6 +516,8 @@ export default function ContractEditorPage() {
                         )}
                       </div>
                       <input
+                        id={f.key}
+                        name={f.key}
                         type="text"
                         value={fieldData[f.key] || ''}
                         onChange={(e) => handleFormFieldChange(f.key, e.target.value)}
@@ -533,7 +539,7 @@ export default function ContractEditorPage() {
                   {termFields.map((f) => (
                     <div key={f.key} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">
+                        <label htmlFor={f.key} className="text-[11px] font-bold text-slate-700">
                           {f.label}
                         </label>
                         {fieldData[f.key] ? (
@@ -543,6 +549,8 @@ export default function ContractEditorPage() {
                         )}
                       </div>
                       <input
+                        id={f.key}
+                        name={f.key}
                         type={f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : 'text'}
                         value={fieldData[f.key] || ''}
                         onChange={(e) => handleFormFieldChange(f.key, e.target.value)}
@@ -564,7 +572,7 @@ export default function ContractEditorPage() {
                   {commercialFields.map((f) => (
                     <div key={f.key} className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <label className="text-[11px] font-bold text-slate-700">
+                        <label htmlFor={f.key} className="text-[11px] font-bold text-slate-700">
                           {f.label}
                         </label>
                         {fieldData[f.key] ? (
@@ -575,6 +583,8 @@ export default function ContractEditorPage() {
                       </div>
                       {f.type === 'textarea' ? (
                         <textarea
+                          id={f.key}
+                          name={f.key}
                           rows={3}
                           value={fieldData[f.key] || ''}
                           onChange={(e) => handleFormFieldChange(f.key, e.target.value)}
@@ -583,6 +593,8 @@ export default function ContractEditorPage() {
                         />
                       ) : (
                         <input
+                          id={f.key}
+                          name={f.key}
                           type={f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : 'text'}
                           value={fieldData[f.key] || ''}
                           onChange={(e) => handleFormFieldChange(f.key, e.target.value)}
