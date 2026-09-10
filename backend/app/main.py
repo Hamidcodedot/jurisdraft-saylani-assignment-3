@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     # Verify templates load
     catalog = template_service.get_catalog()
-    print(f"[*] Pre-Legal Backend initialized with {len(catalog)} legal templates.")
+    print(f"[*] JurisDraft Backend initialized with {len(catalog)} legal templates.")
     yield
 
 app = FastAPI(

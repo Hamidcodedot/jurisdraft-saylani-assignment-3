@@ -3,8 +3,8 @@ import './globals.css';
 import { Navbar } from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Pre-Legal — Automated Legal Document Drafting Platform',
-  description: 'Enterprise SaaS for automated pre-legal contract drafting using standardized templates, fast AI conversational guidance, and persistent vaults.',
+  title: 'JurisDraft — Enterprise Legal Document Automation & Repository',
+  description: 'Institutional SaaS for automated corporate legal agreements, standard contract engineering, fast conversational intake, and tamper-resistant document repositories.',
 };
 
 export default function RootLayout({
@@ -14,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans antialiased selection:bg-slate-900 selection:text-white">
         <Navbar />
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 min-h-0 flex flex-col">
           {children}
         </main>
       </body>

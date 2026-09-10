@@ -1,7 +1,7 @@
-# Pre-Legal — SaaS Legal Document Drafter
+# JurisDraft — Enterprise Legal Document Automation & Repository
 
 ## Product Overview
-Pre-Legal is a SaaS product that enables users to draft customized, legally standard agreements based on curated templates in the `templates` directory. The user interacts through a refined conversational legal assistant or structured form to determine document needs and fill all parameters. Available documents and field schemas are defined in `catalog.json`.
+JurisDraft is an enterprise SaaS platform that enables companies and legal teams to draft customized, institutional-grade agreements based on curated open standards (Common Paper) in the `templates` directory. The user interacts through a refined conversational legal assistant, categorized form inputs, or a direct raw clause editor with instant parchment preview. Available documents and field schemas are defined in `catalog.json`.
 
 Initial prototype proved the concept with Mutual NDAs; V1 expands to full multi-document coverage, persistent accounts, live contract preview, and containerized deployment.
 

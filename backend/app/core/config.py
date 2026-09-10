@@ -8,8 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Pre-Legal"
-    PROJECT_DESCRIPTION: str = "Enterprise SaaS for Automated Legal Document Drafting"
+    PROJECT_NAME: str = "JurisDraft"
+    PROJECT_DESCRIPTION: str = "Enterprise SaaS for Automated Legal Document Drafting & Repository"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     

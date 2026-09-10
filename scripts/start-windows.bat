@@ -1,8 +1,8 @@
 @echo off
-title Pre-Legal SaaS Launcher
+title JurisDraft SaaS Launcher
 cls
 echo ==========================================================
-echo   PRE-LEGAL - AI CONTRACT GENERATOR ^& VAULT
+echo   JURISDRAFT - ENTERPRISE CONTRACT REPOSITORY ^& STUDIO
 echo   Saylani Mass IT Training (SMIT) - Classes 9 ^& 10
 echo ==========================================================
 echo.
@@ -17,7 +17,7 @@ if not exist "backend\venv\Scripts\python.exe" (
 
 echo [*] Launching FastAPI Backend on http://localhost:8000...
 set PYTHONPATH=.
-start "Pre-Legal Backend" cmd /k "backend\venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000 --reload"
+start "JurisDraft Backend" cmd /k "backend\venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000 --reload"
 
 timeout /t 2 /nobreak >nul
 

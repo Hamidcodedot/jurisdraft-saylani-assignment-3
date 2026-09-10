@@ -31,7 +31,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setFillColor(colors.HexColor("#64748B"))  # Slate-500
 
         # Running Header
-        self.drawString(54, 755, "PRE-LEGAL — AUTOMATED CONTRACT GENERATOR")
+        self.drawString(54, 755, "JURISDRAFT — ENTERPRISE CONTRACT REPOSITORY")
         self.drawRightString(612 - 54, 755, "PRELIMINARY DRAFT")
         self.setStrokeColor(colors.HexColor("#E2E8F0"))
         self.setLineWidth(0.75)
@@ -115,8 +115,8 @@ class PDFService:
         # Top Disclaimer Callout Banner
         disclaimer_content = [
             [Paragraph(
-                "<b>MANDATORY LEGAL DISCLAIMER:</b> This document was compiled via the Pre-Legal automated platform. "
-                "It is a non-binding preliminary draft provided for transactional convenience only and does not "
+                "<b>MANDATORY LEGAL DISCLAIMER:</b> This document was compiled via the JurisDraft automated platform. "
+                "It is a preliminary draft provided for transactional convenience only and does not "
                 "constitute attorney-client communication or legal representation. Review by qualified legal counsel "
                 "is strictly recommended prior to execution.",
                 disclaimer_box_style

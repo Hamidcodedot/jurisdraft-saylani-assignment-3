@@ -28,11 +28,11 @@ export const LegalDisclaimer: React.FC<LegalDisclaimerProps> = ({ compact = fals
             MANDATORY LEGAL PRACTICE DISCLAIMER
           </p>
           <p className="text-slate-700">
-            This agreement is a non-binding preliminary draft compiled using automated template interpolation and conversational AI assistance. 
-            Pre-Legal is a software platform, not a law firm, and does not provide legal representation, statutory advice, or attorney-client privileged counsel.
+            This agreement is a preliminary draft compiled using automated template interpolation and conversational intelligence. 
+            JurisDraft is a software technology platform, not a law firm, and does not provide formal legal representation, statutory advice, or attorney-client privileged counsel.
           </p>
           <p className="text-slate-600">
-            Users must have this document formally evaluated, adapted, and approved by qualified legal counsel licensed in the governing jurisdiction prior to execution.
+            Corporate entities and individuals must have this document evaluated, adapted, and approved by licensed legal counsel in the governing jurisdiction prior to execution.
           </p>
         </div>
       </div>

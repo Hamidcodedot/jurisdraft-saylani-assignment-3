@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==========================================================
-# Pre-Legal SaaS — macOS / Linux Startup Script
+# JurisDraft SaaS — macOS / Linux Startup Script
 # As referenced in SMIT Class 10.4
 # ==========================================================
 
@@ -9,7 +9,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 echo "=========================================================="
-echo "  PRE-LEGAL — AI CONTRACT GENERATOR & VAULT"
+echo "  JURISDRAFT — ENTERPRISE CONTRACT REPOSITORY & STUDIO"
 echo "  Saylani Mass IT Training (SMIT) • Classes 9 & 10"
 echo "=========================================================="
 echo ""

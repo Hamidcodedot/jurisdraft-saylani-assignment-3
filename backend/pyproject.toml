@@ -1,7 +1,7 @@
 [project]
-name = "prelegal-backend"
+name = "jurisdraft-backend"
 version = "1.0.0"
-description = "Pre-Legal SaaS - FastAPI backend for automated legal document drafting"
+description = "JurisDraft SaaS - FastAPI backend for automated legal document drafting & repository"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

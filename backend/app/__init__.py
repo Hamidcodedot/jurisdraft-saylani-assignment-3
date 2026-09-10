@@ -1,2 +1,2 @@
-"""Pre-Legal Backend Application Package"""
+"""JurisDraft Backend Application Package"""
 __version__ = "1.0.0"

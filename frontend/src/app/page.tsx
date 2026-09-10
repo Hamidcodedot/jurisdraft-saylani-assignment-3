@@ -39,19 +39,21 @@ export default function HomePage() {
           
           <div className="max-w-3xl">
             {/* Top Eyebrow Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-[11px] font-semibold text-slate-700 tracking-wide uppercase mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-              Enterprise Contract Engine • V1 Release
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-700 text-[11px] font-semibold tracking-wide uppercase mb-6 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
+              <span className="text-[#D4AF37] font-bold">JurisDraft</span>
+              <span className="text-slate-400">•</span>
+              <span className="text-slate-300">Enterprise Contract Automation Suite</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-serif leading-[1.15] mb-6">
-              Institutional Legal Agreements, Compiled in Minutes.
+              Institutional Legal Agreements, Engineered for Global Enterprise.
             </h1>
 
             {/* Subheading */}
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl font-normal">
-              Draft bespoke bilateral NDAs, Cloud Service Agreements, and contractor contracts using audited open standards. Powered by conversational AI legal intake, live contract preview, and multi-user vaults.
+              Draft bilateral NDAs, Cloud Master Services Agreements, and enterprise software licenses using vetted institutional standards. Powered by conversational paralegal intake, interactive clause editing, and encrypted multi-tenant vaults.
             </p>
 
             {/* Primary Action Buttons */}
@@ -173,7 +175,7 @@ export default function HomePage() {
               Engineering Disciplined Legal Operations
             </h2>
             <p className="text-xs text-slate-600 mt-2">
-              How Pre-Legal merges standardized transactional law with autonomous AI engineering.
+              How JurisDraft merges standardized transactional law with autonomous AI engineering.
             </p>
           </div>
 
@@ -212,12 +214,12 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 border-t border-slate-800">
+      <footer className="bg-[#0A1128] text-white py-12 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-400">
           <div className="flex items-center gap-3">
-            <span className="font-serif text-lg font-bold text-white">§ Pre-Legal</span>
+            <span className="font-serif text-lg font-bold text-[#D4AF37]">JurisDraft</span>
             <span>•</span>
-            <span>Saylani Mass IT Training (SMIT) AI Engineering Assignment</span>
+            <span>Enterprise Legal Document Automation</span>
           </div>
 
           <div>

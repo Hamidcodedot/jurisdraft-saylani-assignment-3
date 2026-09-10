@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { BrandLogo } from '@/components/BrandLogo';
 import { api } from '@/lib/api';
 import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
 
@@ -37,11 +38,11 @@ export default function LoginPage() {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-serif text-xl font-bold mx-auto mb-3 shadow-md">
-            §
+          <div className="flex justify-center mb-3">
+            <BrandLogo size="lg" theme="light" showText={false} />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 font-serif tracking-tight">
-            Sign In to Pre-Legal
+            Sign In to JurisDraft
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Access your secure institutional contract repository

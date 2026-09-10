@@ -1,17 +1,19 @@
-# Pre-Legal — AI-Powered SaaS Legal Document Drafter
+# JurisDraft — Enterprise Legal Document Automation & Repository
 
-> Institutional-grade legal document generation powered by curated open-standard templates, fast conversational AI drafting, persistent multi-user vaults, and containerized deployment.  
+> Institutional-grade legal document generation powered by curated open-standard templates, fast conversational AI drafting, interactive clause editing, persistent multi-user vaults, and containerized deployment.  
 > Developed as the **Week 2 Capstone Project** for **Saylani Mass IT Training (SMIT)**: *Vibe Engineering with AI Coding Agents* (Classes 9 & 10).
 
 ---
 
 ## 1. Product Overview
 
-Pre-Legal bridges institutional legal documentation with autonomous AI engineering. Instead of confronting users with intimidating legal jargon or tedious static questionnaires, Pre-Legal conducts an articulate, structured conversational intake interview like an experienced corporate paralegal—extracting contractual parameters, providing clause suggestions, rendering documents live on an authentic parchment canvas, and exporting publication-ready PDFs.
+**JurisDraft** bridges institutional legal documentation with autonomous AI engineering. Instead of confronting users with intimidating legal jargon or tedious static questionnaires, JurisDraft conducts an articulate, structured conversational intake interview like an experienced corporate paralegal—extracting contractual parameters, providing clause suggestions, rendering documents live on an authentic parchment canvas, and exporting publication-ready PDFs.
 
 ### Key Highlights
 - **Curated Open Standards (Common Paper)**: Standard agreements modeled after vetted Common Paper frameworks under CC BY 4.0 (Mutual NDA, Cloud Service Agreement, Software License, Consulting Agreement, Terms of Service, Privacy Policy).
-- **Anti-AI Slop Human-Grade Design**: Bespoke legal tech aesthetic inspired by enterprise platforms (Ironclad, Carta, Clerky)—warm paper textures, crisp serif contract typography, Roman numeral clause divisions, and realistic signature execution lines.
+- **Anti-AI Slop Institutional Design**: Bespoke legal tech aesthetic inspired by enterprise platforms (Ironclad, Carta, Clerky)—Obsidian Navy (`#0C1838`) and Imperial Gold (`#D4AF37`) palette, heraldic legal crest logo, warm paper textures, crisp serif contract typography, Roman numeral clause divisions, and realistic execution signature lines.
+- **Direct Clause Text Editor**: Live clause editor allowing corporate counsel to directly inspect, tweak, and inject custom riders and wording into the agreement with instantaneous real-time preview sync.
+- **1-Click Corporate Presets**: Fast-fill verified corporate profiles (e.g., Delaware corporation counterparty, 24/7 enterprise SLA terms) for immediate end-to-end evaluation.
 - **Cerebras Fast Inference Skill**: Integrates the custom skill (`.claude/skills/cerebras/SKILL.md`) utilizing LiteLLM via OpenRouter pinned to Cerebras (`openai/gpt-oss-120b`) for sub-second structured outputs, with an intelligent offline deterministic legal engine fallback.
 - **Freemium Product-Led Growth**: Visitors can browse templates, converse with the legal assistant, and preview live contracts without signing in. Creating an account is required only to save documents to their cloud vault, seamlessly migrating guest drafts upon sign-up.
 - **Mandatory Legal Review Disclaimer**: Authoritative disclaimer banners embedded in preview canvasses and exported PDFs, reminding users to verify terms with licensed legal counsel before execution.
@@ -23,7 +25,7 @@ Pre-Legal bridges institutional legal documentation with autonomous AI engineeri
 
 ```
 +---------------------------------------------------------------------------------+
-|                               Pre-Legal SaaS Stack                              |
+|                               JurisDraft SaaS Stack                             |
 |                           Unified Container (Port 8000)                         |
 +---------------------------------------------------------------------------------+
                                          |
@@ -35,10 +37,12 @@ Pre-Legal bridges institutional legal documentation with autonomous AI engineeri
 +----------------------------------+                   +----------------------------------+
   • Landing & Search Catalog                             • JWT Authentication & Bcrypt
   • Split-Screen Contract Studio                         • Markdown Template Engine
-    - Left: AI Paralegal Chat & Form                     • SQLite Cloud Vault
-    - Right: Parchment Contract Preview                  • Cerebras / LiteLLM AI Service
-  • User Documents Vault                                 • ReportLab Publication PDF Engine
-  • Freemium Auth Modals                                 • Single-Container Static SPA Host
+    - Tab 1: AI Paralegal Assistant                      • SQLite Cloud Vault
+    - Tab 2: Categorized Form Fields                     • Cerebras / LiteLLM AI Service
+    - Tab 3: Direct Clause Text Editor                   • ReportLab Publication PDF Engine
+    - Tab 4: Health Audit Checklist                      • Single-Container Static SPA Host
+  • User Documents Vault                                 
+  • Freemium Auth Modals                                 
 ```
 
 ### Technology Matrix
@@ -68,7 +72,7 @@ All templates are located in `templates/` formatted in clean Markdown with inter
 
 ## 4. Class 9 & Class 10 Alignment
 
-Pre-Legal satisfies every engineering requirement taught across the curriculum:
+JurisDraft satisfies every engineering requirement taught across the curriculum:
 
 - **Class 9.1–9.5**: Structured Jira-to-PR methodology with full ticket documentation (`docs/JIRA_BACKLOG.md` tracking `PL-1` through `PL-7`).
 - **Class 10.1**: The SaaS blueprint with containerized architecture and two `CLAUDE.md` files.

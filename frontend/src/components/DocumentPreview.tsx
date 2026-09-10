@@ -82,7 +82,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
               {trimmed.replace(/^#\s*/, '')}
             </h1>
             <div className="text-[11px] text-slate-500 font-sans mt-1 tracking-widest uppercase font-semibold">
-              PRE-LEGAL STANDARD FORM • PRELIMINARY DRAFT
+              JURISDRAFT ENTERPRISE REPOSITORY • STANDARD FORM
             </div>
           </div>
         );
@@ -165,10 +165,10 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-100/70">
+    <div className="flex flex-col h-full min-h-0 bg-slate-100/70">
       
       {/* Action Bar */}
-      <div className="px-5 py-3 border-b border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3 no-print">
+      <div className="px-5 py-3 border-b border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3 no-print flex-shrink-0">
         
         {/* Left Status */}
         <div className="flex items-center gap-3">
@@ -214,7 +214,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
                   : 'bg-white text-slate-800 border-slate-300 hover:bg-slate-50'
               }`}
             >
-              {isSaved ? '✓ Saved to Cloud' : 'Save to Vault'}
+              {isSaved ? '✓ Saved to Vault' : 'Save to Vault'}
             </button>
           )}
 
@@ -255,7 +255,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
       </div>
 
       {/* Parchment Document Canvas Viewport */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-8 flex justify-center">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-8 flex justify-center">
         
         {/* Physical Paper Sheet Representation */}
         <div
@@ -265,7 +265,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
           
           {/* Top Running Header Rule */}
           <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-6 text-[10px] text-slate-400 font-sans uppercase tracking-wider">
-            <span>Pre-Legal Template Standard</span>
+            <span>JurisDraft Institutional Standard</span>
             <span className="font-semibold text-slate-500">{templateName}</span>
           </div>
 
@@ -282,7 +282,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
           {/* Bottom Execution & Certification Footer */}
           <div className="mt-12 pt-6 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400 font-sans">
             <div>CONFIDENTIAL &amp; PROPRIETARY</div>
-            <div>COMPILED BY PRE-LEGAL AI PLATFORM</div>
+            <div>COMPILED BY JURISDRAFT ENTERPRISE PLATFORM</div>
           </div>
 
         </div>

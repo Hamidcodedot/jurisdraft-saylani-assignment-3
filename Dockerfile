@@ -1,5 +1,5 @@
 # ==========================================================
-# Pre-Legal SaaS — Production Unified Multi-Stage Dockerfile
+# JurisDraft SaaS — Production Unified Multi-Stage Dockerfile
 # Serves Next.js frontend & FastAPI backend on Port 8000
 # ==========================================================
 

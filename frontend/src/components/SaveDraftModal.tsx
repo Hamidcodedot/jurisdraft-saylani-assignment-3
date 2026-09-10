@@ -5,10 +5,12 @@ import { X, ShieldCheck, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
 
+import { BrandLogo } from './BrandLogo';
+
 interface SaveDraftModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (savedDocId: string) => void;
   currentTitle: string;
 }
 
@@ -18,13 +20,13 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
   onSuccess,
   currentTitle,
 }) => {
-  const [mode, setMode] = useState<'signup' | 'login'>('signup');
+  const [mode, setMode] = useState<'login' | 'signup'>('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [companyName, setCompanyName] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -34,24 +36,23 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
     setLoading(true);
 
     try {
-      let res;
       if (mode === 'signup') {
-        res = await api.signup({
+        const res = await api.signup({
           email,
           password,
           full_name: fullName,
           company_name: companyName || undefined,
         });
+        saveAuthToken(res.access_token);
+        saveCurrentUser(res.user);
       } else {
-        res = await api.login(email, password);
+        const res = await api.login(email, password);
+        saveAuthToken(res.access_token);
+        saveCurrentUser(res.user);
       }
-
-      saveAuthToken(res.access_token);
-      saveCurrentUser(res.user);
-      onSuccess();
-      onClose();
+      onSuccess('');
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please check credentials.');
+      setError(err.message || 'Authentication failed. Please verify your credentials.');
     } finally {
       setLoading(false);
     }
@@ -62,19 +63,17 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
       <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full overflow-hidden">
         
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-serif text-base font-bold">
-              §
-            </div>
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-[#0C1838] text-white">
+          <div className="flex items-center gap-3">
+            <BrandLogo size="sm" theme="dark" showText={false} />
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Save to Pre-Legal Vault</h3>
-              <p className="text-[11px] text-slate-500">Secure cloud storage for your legal agreements</p>
+              <h3 className="font-bold text-white text-sm">Save to JurisDraft Vault</h3>
+              <p className="text-[11px] text-slate-300">Secure cloud repository for your legal agreements</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 p-1 rounded-md transition"
+            className="text-slate-400 hover:text-white p-1 rounded-md transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -201,7 +200,7 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
         {/* Footer */}
         <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 text-center">
           <p className="text-[11px] text-slate-500">
-            By signing up, you acknowledge that Pre-Legal is an automated documentation drafting platform and not formal legal counsel.
+            By signing up, you acknowledge that JurisDraft is an automated documentation drafting platform and not formal legal counsel.
           </p>
         </div>
 

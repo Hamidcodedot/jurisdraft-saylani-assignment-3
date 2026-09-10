@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 
 Write-Host ""
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "  PRE-LEGAL — AI CONTRACT GENERATOR & VAULT" -ForegroundColor Cyan
+Write-Host "  JURISDRAFT — ENTERPRISE CONTRACT REPOSITORY & STUDIO" -ForegroundColor Cyan
 Write-Host "  Saylani Mass IT Training (SMIT) • Classes 9 & 10" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host ""
@@ -43,7 +43,7 @@ if (-not (Test-Path "$ROOT\frontend\node_modules")) {
 }
 
 Write-Host ""
-Write-Host "[✓] Pre-Legal SaaS is running!" -ForegroundColor Cyan
+Write-Host "[✓] JurisDraft SaaS is running!" -ForegroundColor Cyan
 Write-Host "    • Frontend: http://localhost:3000" -ForegroundColor White
 Write-Host "    • Backend API & Docs: http://localhost:8000/docs" -ForegroundColor White
 Write-Host "    • Health Status: http://localhost:8000/api/health" -ForegroundColor White
