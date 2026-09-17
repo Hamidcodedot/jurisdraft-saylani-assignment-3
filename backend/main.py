@@ -12,7 +12,4 @@ for p in [str(_CURRENT_DIR), str(_ROOT_DIR)]:
 
 os.environ.setdefault("VERCEL", "1")
 
-try:
-    from backend.app.main import app
-except ImportError:
-    from app.main import app
+from backend.app.main import app
