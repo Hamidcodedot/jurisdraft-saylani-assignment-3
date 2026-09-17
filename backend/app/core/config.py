@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from typing import List
+from typing import List, Any
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 # Root directory of the repository (two levels up from backend/app/core)
@@ -9,20 +10,36 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
 IS_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 
+def _normalize_db_url(url: str, is_sync: bool = False) -> str:
+    if not url or not str(url).strip():
+        if IS_SERVERLESS:
+            db_path = Path("/tmp") / "prelegal.db"
+        else:
+            db_path = BACKEND_DIR / "prelegal.db"
+        try:
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
+        prefix = "sqlite:///" if is_sync else "sqlite+aiosqlite:///"
+        return f"{prefix}{db_path.as_posix()}"
+
+    clean = str(url).strip()
+    if is_sync:
+        if clean.startswith("postgres://"):
+            clean = clean.replace("postgres://", "postgresql://", 1)
+    else:
+        if clean.startswith("postgres://"):
+            clean = clean.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif clean.startswith("postgresql://") and not clean.startswith("postgresql+"):
+            clean = clean.replace("postgresql://", "postgresql+asyncpg://", 1)
+        elif clean.startswith("sqlite:///") and not clean.startswith("sqlite+aiosqlite:///"):
+            clean = clean.replace("sqlite:///", "sqlite+aiosqlite:///", 1)
+    return clean
+
 def _get_default_db_url(is_sync: bool = False) -> str:
     env_var = "SYNC_DATABASE_URL" if is_sync else "DATABASE_URL"
-    if os.environ.get(env_var):
-        return os.environ[env_var]
-    if IS_SERVERLESS:
-        db_path = Path("/tmp") / "prelegal.db"
-    else:
-        db_path = BACKEND_DIR / "prelegal.db"
-    try:
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-    except Exception:
-        pass
-    prefix = "sqlite:///" if is_sync else "sqlite+aiosqlite:///"
-    return f"{prefix}{db_path.as_posix()}"
+    raw = os.environ.get(env_var, "")
+    return _normalize_db_url(raw, is_sync=is_sync)
 
 def _get_templates_dir() -> Path:
     candidates = [
@@ -64,6 +81,16 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = _get_default_db_url(is_sync=False)
     SYNC_DATABASE_URL: str = _get_default_db_url(is_sync=True)
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def clean_database_url(cls, v: Any) -> str:
+        return _normalize_db_url(str(v or ""), is_sync=False)
+
+    @field_validator("SYNC_DATABASE_URL", mode="before")
+    @classmethod
+    def clean_sync_database_url(cls, v: Any) -> str:
+        return _normalize_db_url(str(v or ""), is_sync=True)
     
     # AI Engine & Inference
     OPENROUTER_API_KEY: str = ""

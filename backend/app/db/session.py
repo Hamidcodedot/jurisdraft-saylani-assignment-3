@@ -1,13 +1,23 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
-from app.core.config import settings
+from app.core.config import settings, IS_SERVERLESS, BACKEND_DIR
+from pathlib import Path
 
 # Async engine for non-blocking FastAPI operations
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=False,
-    connect_args={"check_same_thread": False, "timeout": 30}
-)
+try:
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        connect_args={"check_same_thread": False, "timeout": 30}
+    )
+except Exception as _engine_err:
+    print(f"[!] Warning: Initializing fallback sqlite engine due to: {_engine_err}")
+    _fallback_path = Path("/tmp") / "prelegal.db" if IS_SERVERLESS else BACKEND_DIR / "prelegal.db"
+    engine = create_async_engine(
+        f"sqlite+aiosqlite:///{_fallback_path.as_posix()}",
+        echo=False,
+        connect_args={"check_same_thread": False, "timeout": 30}
+    )
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
