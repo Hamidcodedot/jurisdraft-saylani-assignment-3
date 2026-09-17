@@ -80,6 +80,11 @@ for r in [auth.router, templates.router, chat.router, documents.router]:
     app.include_router(r, prefix=settings.API_V1_STR)
     app.include_router(r, prefix="/v1")
 
+@app.get("/ping")
+@app.get("/api/ping")
+async def ping():
+    return {"status": "ok", "message": "JurisDraft API online"}
+
 @app.get("/health", tags=["Health"])
 @app.get("/api/health", tags=["Health"])
 async def health_check():
