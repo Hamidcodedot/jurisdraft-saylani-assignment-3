@@ -8,11 +8,12 @@ class DocumentBase(BaseModel):
     field_data: Dict[str, Any] = {}
 
 class DocumentCreate(DocumentBase):
-    pass
+    rendered_content: Optional[str] = None
 
 class DocumentUpdate(BaseModel):
     title: Optional[str] = None
     field_data: Optional[Dict[str, Any]] = None
+    rendered_content: Optional[str] = None
     status: Optional[str] = None
 
 class DocumentResponse(DocumentBase):

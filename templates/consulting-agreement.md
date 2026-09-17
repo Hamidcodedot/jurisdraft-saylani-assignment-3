@@ -1,70 +1,102 @@
 # INDEPENDENT CONSULTING AGREEMENT
 
-**Engagement ID:** {{reference_number}}  
+**Engagement Reference:** {{reference_number}}  
 **Effective Date:** {{effective_date}}  
-**Governing Law:** {{governing_jurisdiction}}  
+**Governing Jurisdiction:** {{governing_jurisdiction}}  
 
-This Independent Consulting Agreement ("Agreement") is made between:
+This Independent Consulting Agreement ("Agreement") is made and entered into as of the Effective Date by and between:
 
-- **Client:** {{client_company_name}}, located at {{client_address}} ("Client"); and
-- **Consultant:** {{consultant_name_or_firm}}, located at {{consultant_address}} ("Consultant").
+- **Client:** {{client_company_name}}, having its principal corporate offices at {{client_address}} ("Client"); and
+- **Consultant:** {{consultant_name_or_firm}}, having its principal business address at {{consultant_address}} ("Consultant").
 
----
-
-### 1. SERVICES AND DELIVERABLES
-
-1.1 **Scope of Work.** Consultant shall perform the professional services described as: {{scope_of_services_summary}} ("Services") and deliver the milestones outlined in Schedule A.
-
-1.2 **Standard of Performance.** Consultant warrants that Services shall be executed in a diligent, workmanlike, and professional manner adhering to recognized industry practices.
+Client and Consultant may collectively be referred to as the "Parties" or individually as a "Party."
 
 ---
 
-### 2. COMPENSATION AND EXPENSES
+### RECITALS
 
-2.1 **Consulting Fees.** Client shall pay Consultant at the rate of {{compensation_rate_structure}} (Total Fee Cap: {{compensation_total_cap}}).
+WHEREAS, Client requires high-level professional advisory, technical architecture, and implementation services; and
 
-2.2 **Invoicing & Settlement.** Consultant shall invoice Client on a {{invoicing_frequency}} basis. Undisputed invoices shall be settled within {{payment_net_days}} days of receipt.
+WHEREAS, Consultant possesses specialized expertise, qualifications, and capabilities required to perform such services; and
 
-2.3 **Expenses.** Pre-approved, reasonable travel or out-of-pocket expenses incurred in performance of the Services will be reimbursed upon submission of itemized receipts.
+WHEREAS, Client desires to retain Consultant as an independent contractor, and Consultant desires to perform such services for Client, pursuant to the terms and conditions set forth herein.
+
+NOW, THEREFORE, the Parties agree as follows:
+
+---
+
+### 1. SERVICES AND STATEMENT OF WORK
+
+1.1 **Scope of Services.** Consultant shall perform the professional services, engineering tasks, and deliverable milestones described as: {{scope_of_services_summary}} ("Services").
+
+1.2 **Professional Performance Standards.** Consultant warrants and represents that all Services shall be executed in a diligent, workmanlike, professional, and ethical manner adhering to the highest prevailing standards of the applicable industry.
+
+---
+
+### 2. COMPENSATION, INVOICING & EXPENSES
+
+2.1 **Fee Structure.** In full consideration for the performance of Services and delivery of Work Product, Client shall pay Consultant according to the following agreed structure: {{compensation_rate_structure}}. The total compensation paid under this engagement shall not exceed {{compensation_total_cap}} without prior written authorization from Client.
+
+2.2 **Invoicing & Settlement.** Consultant shall deliver itemized invoices to Client on a {{invoicing_frequency}} basis. Undisputed invoice amounts shall be settled and paid by Client within {{payment_net_days}} calendar days of invoice receipt.
+
+2.3 **Reimbursable Expenses.** Client shall reimburse Consultant for pre-approved, reasonable, and necessary travel, lodging, and out-of-pocket expenses directly incurred in performing the Services, provided Consultant submits verifiable receipts within thirty (30) days of expenditure.
 
 ---
 
 ### 3. INDEPENDENT CONTRACTOR STATUS
 
-Consultant is an independent contractor and not an employee, agent, or partner of Client. Consultant is solely responsible for all income tax withholdings, social security, worker's compensation, and employee benefits.
+Consultant is an independent contractor and not an employee, agent, joint venturer, or legal partner of Client. Consultant retains exclusive control over the manner and means of performing the Services. Consultant shall be solely responsible for all federal, state, and local income tax withholdings, social security contributions, unemployment insurance, worker's compensation, and employee benefit plans. Consultant has no authority to bind Client to any contract or obligation.
 
 ---
 
-### 4. INTELLECTUAL PROPERTY & WORK FOR HIRE
+### 4. INTELLECTUAL PROPERTY & WORK MADE FOR HIRE
 
-4.1 **Work Made for Hire.** All deliverables, inventions, code, designs, and work products created by Consultant under this Agreement ("Work Product") shall be deemed "works made for hire" and are the exclusive property of Client.
+4.1 **Work Made for Hire.** Consultant acknowledges and agrees that all deliverables, documentation, software code, designs, algorithms, reports, inventions, and work products conceived, authored, or generated by Consultant in connection with the Services ("Work Product") shall constitute a "work made for hire" for Client under the United States Copyright Act.
 
-4.2 **Assignment.** To the extent any Work Product does not qualify as a work made for hire, Consultant hereby irrevocably assigns to Client all right, title, and interest therein, including all intellectual property rights.
-
----
-
-### 5. CONFIDENTIALITY
-
-Consultant agrees to maintain the strict confidentiality of all proprietary business, product, and client data received during the engagement, and not disclose such information to any third party for a period of {{confidentiality_duration_years}} years following project completion.
+4.2 **Irrevocable Assignment.** To the extent any Work Product does not legally qualify as a work made for hire, Consultant hereby irrevocably assigns and transfers to Client all exclusive right, title, and interest in and to such Work Product, including all copyrights, patents, trade secrets, and moral rights therein worldwide.
 
 ---
 
-### 6. TERM AND TERMINATION
+### 5. CONFIDENTIALITY & DATA PROTECTION
 
-6.1 **Term.** This engagement starts on the Effective Date and continues until {{project_completion_target_date}} unless earlier terminated.
-
-6.2 **Termination for Convenience.** Either Party may terminate this Agreement without cause upon giving {{termination_notice_days}} days prior written notice.
+Consultant covenants to hold in strictest confidence all proprietary, confidential, financial, and technical information of Client obtained during the course of the engagement. Consultant shall not disclose or use such information except as necessary to perform the Services. This confidentiality covenant shall survive for a period of {{confidentiality_duration_years}} years following completion or termination of this Agreement.
 
 ---
 
-### 7. SIGNATURES
+### 6. NON-SOLICITATION COVENANT
+
+During the term of this Agreement and for a period of twelve (12) months thereafter, Consultant shall not, directly or indirectly, solicit, induce, recruit, or attempt to hire any employee or contractor of Client to terminate their employment or engagement with Client.
+
+---
+
+### 7. TERM AND TERMINATION
+
+7.1 **Term.** This engagement commences on the Effective Date and shall continue until target completion date of {{project_completion_target_date}}, unless earlier terminated in accordance with this Section.
+
+7.2 **Termination for Convenience.** Either Party may terminate this Agreement for convenience, with or without cause, upon giving at least {{termination_notice_days}} calendar days prior written notice to the other Party. In the event of early termination, Client shall pay Consultant for all authorized Services satisfactorily performed up to the effective termination date.
+
+7.3 **Termination for Cause.** Either Party may terminate this Agreement immediately if the other Party materially breaches any obligation and fails to cure such breach within seven (7) days of written notice.
+
+---
+
+### 8. GOVERNING LAW AND DISPUTES
+
+This Agreement shall be governed by and construed in accordance with the substantive laws of {{governing_jurisdiction}}. Any legal claim or dispute arising out of this Agreement shall be brought exclusively in the courts located within {{governing_jurisdiction}}.
+
+---
+
+### IN WITNESS WHEREOF
+
+The Parties hereto have executed this Independent Consulting Agreement as of the Effective Date written above.
 
 **CLIENT: {{client_company_name}}**  
 By: ____________________________________  
 Name: {{client_signatory_name}}  
 Title: {{client_signatory_title}}  
+Date: __________________________________  
 
 **CONSULTANT: {{consultant_name_or_firm}}**  
 By: ____________________________________  
 Name: {{consultant_signatory_name}}  
 Title: {{consultant_signatory_title}}  
+Date: __________________________________  

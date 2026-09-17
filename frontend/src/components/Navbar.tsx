@@ -12,7 +12,8 @@ import {
   Menu, 
   X, 
   ShieldCheck,
-  Building
+  Building,
+  CheckCircle2
 } from 'lucide-react';
 import { BrandLogo } from '@/components/BrandLogo';
 import { useAuth } from '@/lib/auth';
@@ -48,7 +49,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#0C1838]/95 backdrop-blur-md border-b border-slate-800 text-white shadow-sm">
+    <header className="sticky top-0 z-40 w-full bg-[#0C1838]/95 backdrop-blur-md border-b border-slate-800/80 text-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Brand Crest & Title */}
@@ -61,24 +62,25 @@ export const Navbar: React.FC = () => {
           <nav className="hidden md:flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-slate-300 ml-4">
             <Link
               href="/"
-              className={`px-3 py-1.5 rounded-md transition duration-150 ${
+              className={`px-3 py-1.5 rounded-md transition duration-150 flex items-center gap-1.5 ${
                 isNavActive('/') 
-                  ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/30' 
+                  ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/40 shadow-xs' 
                   : 'hover:text-white hover:bg-white/5'
               }`}
             >
-              Templates Catalog
+              <FileText className={`w-3.5 h-3.5 ${isNavActive('/') ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
+              <span>Templates Catalog</span>
             </Link>
             
             <Link
               href="/documents"
               className={`px-3 py-1.5 rounded-md transition duration-150 flex items-center gap-1.5 ${
                 isNavActive('/documents') 
-                  ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/30' 
+                  ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/40 shadow-xs' 
                   : 'hover:text-white hover:bg-white/5'
               }`}
             >
-              <FolderGit2 className="w-3.5 h-3.5 text-slate-400" />
+              <FolderGit2 className={`w-3.5 h-3.5 ${isNavActive('/documents') ? 'text-[#D4AF37]' : 'text-slate-400'}`} />
               <span>Corporate Vault</span>
             </Link>
           </nav>
@@ -87,10 +89,10 @@ export const Navbar: React.FC = () => {
         {/* Right Action Section (Desktop) */}
         <div className="hidden md:flex items-center gap-3">
           {user ? (
-            <div className="flex items-center gap-3 bg-slate-900/60 border border-slate-800 py-1 px-3 rounded-lg">
-              {/* User Avatar Initials */}
+            <div className="flex items-center gap-3 bg-slate-900/80 border border-slate-700/80 py-1.5 px-3.5 rounded-lg shadow-inner">
+              {/* User Avatar Initials with Gold Ring */}
               <div 
-                className="w-8 h-8 rounded-full bg-[#0C1838] border border-[#D4AF37]/60 flex items-center justify-center text-xs font-bold text-[#D4AF37] tracking-wider shadow-inner"
+                className="w-8 h-8 rounded-full bg-[#0C1838] border border-[#D4AF37] ring-1 ring-[#D4AF37]/40 flex items-center justify-center text-xs font-bold text-[#D4AF37] tracking-wider shadow-xs"
                 title={user.full_name || user.email}
               >
                 {getUserInitials(user.full_name, user.email)}
@@ -98,20 +100,25 @@ export const Navbar: React.FC = () => {
 
               {/* User Details */}
               <div className="flex flex-col text-left">
-                <span className="text-xs font-semibold text-white leading-tight truncate max-w-[160px]">
-                  {user.full_name || 'Legal Counsel'}
-                </span>
-                <span className="text-[10px] text-slate-400 truncate max-w-[160px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-white leading-tight truncate max-w-[150px]">
+                    {user.full_name || 'Legal Counsel'}
+                  </span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-[#D4AF37] border border-[#D4AF37]/40 uppercase tracking-widest">
+                    Enterprise
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-400 truncate max-w-[170px]">
                   {user.company_name ? user.company_name : user.email}
                 </span>
               </div>
 
-              <div className="h-5 w-px bg-slate-800 mx-1" />
+              <div className="h-5 w-px bg-slate-700/70 mx-1" />
 
               {/* Vault Action */}
               <Link
                 href="/documents"
-                className={`p-1.5 rounded-md transition flex items-center gap-1 text-xs ${
+                className={`p-1.5 rounded-md transition flex items-center gap-1.5 text-xs font-medium ${
                   isNavActive('/documents')
                     ? 'text-[#D4AF37] bg-white/10'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -119,22 +126,24 @@ export const Navbar: React.FC = () => {
                 title="Open Corporate Vault"
               >
                 <FolderGit2 className="w-4 h-4" />
+                <span className="text-[11px] font-sans">Vault</span>
               </Link>
 
               {/* Sign Out Action */}
               <button
                 onClick={logout}
-                className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-white/10 rounded-md transition duration-150"
+                className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-white/10 rounded-md transition duration-150 flex items-center gap-1"
                 title="Sign Out of Session"
               >
                 <LogOut className="w-4 h-4" />
+                <span className="text-[11px] font-sans">Sign Out</span>
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition duration-150 flex items-center gap-1.5"
+                className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition duration-150 flex items-center gap-1.5 border border-transparent hover:border-slate-700"
               >
                 <LogIn className="w-3.5 h-3.5 text-slate-400" />
                 <span>Sign In</span>
@@ -171,17 +180,22 @@ export const Navbar: React.FC = () => {
           {user ? (
             <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#0C1838] border border-[#D4AF37]/60 flex items-center justify-center text-xs font-bold text-[#D4AF37]">
+                <div className="w-9 h-9 rounded-full bg-[#0C1838] border border-[#D4AF37] flex items-center justify-center text-xs font-bold text-[#D4AF37]">
                   {getUserInitials(user.full_name, user.email)}
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">{user.full_name || 'Legal Counsel'}</div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-white">{user.full_name || 'Legal Counsel'}</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-[#D4AF37] border border-[#D4AF37]/40 uppercase tracking-widest">
+                      Enterprise
+                    </span>
+                  </div>
                   <div className="text-[11px] text-slate-400 truncate max-w-[200px]">{user.email}</div>
                 </div>
               </div>
               <button
                 onClick={logout}
-                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-md"
+                className="min-w-[44px] min-h-[44px] p-2.5 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-md flex items-center justify-center"
                 title="Sign Out"
               >
                 <LogOut className="w-5 h-5" />
@@ -210,7 +224,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/"
               className={`min-h-[44px] px-3 py-2.5 rounded-lg flex items-center gap-2.5 ${
-                isNavActive('/') ? 'text-[#D4AF37] bg-white/10 font-bold' : 'text-slate-300 hover:bg-white/5'
+                isNavActive('/') ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/30' : 'text-slate-300 hover:bg-white/5'
               }`}
             >
               <FileText className="w-4 h-4 text-slate-400" />
@@ -220,7 +234,7 @@ export const Navbar: React.FC = () => {
             <Link
               href="/documents"
               className={`min-h-[44px] px-3 py-2.5 rounded-lg flex items-center gap-2.5 ${
-                isNavActive('/documents') ? 'text-[#D4AF37] bg-white/10 font-bold' : 'text-slate-300 hover:bg-white/5'
+                isNavActive('/documents') ? 'text-[#D4AF37] bg-white/10 font-bold border border-[#D4AF37]/30' : 'text-slate-300 hover:bg-white/5'
               }`}
             >
               <FolderGit2 className="w-4 h-4 text-slate-400" />

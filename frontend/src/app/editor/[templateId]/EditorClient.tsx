@@ -196,6 +196,7 @@ export default function ContractEditorPage() {
         const updated = await api.updateDocument(documentId, {
           title: documentTitle,
           field_data: fieldData,
+          rendered_content: renderedContent,
         });
         setDocumentId(updated.id);
       } else {
@@ -203,6 +204,7 @@ export default function ContractEditorPage() {
           template_id: templateId,
           title: documentTitle,
           field_data: fieldData,
+          rendered_content: renderedContent,
         });
         setDocumentId(created.id);
       }
@@ -219,6 +221,7 @@ export default function ContractEditorPage() {
         template_id: templateId,
         title: documentTitle,
         field_data: fieldData,
+        rendered_content: renderedContent,
       });
       setDocumentId(created.id);
       setIsSaved(true);

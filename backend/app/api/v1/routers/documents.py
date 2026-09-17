@@ -67,7 +67,11 @@ async def create_document(
             detail=f"Template with id '{doc_in.template_id}' was not found."
         )
 
-    rendered = template_service.render_document(doc_in.template_id, doc_in.field_data)
+    rendered = (
+        doc_in.rendered_content
+        if doc_in.rendered_content and doc_in.rendered_content.strip()
+        else template_service.render_document(doc_in.template_id, doc_in.field_data)
+    )
     pct, _, _ = template_service.calculate_completeness(doc_in.template_id, doc_in.field_data)
     doc_status = "completed" if pct >= 95.0 else "draft"
 
@@ -150,9 +154,13 @@ async def update_document(
     if doc_in.title is not None:
         doc.title = doc_in.title
 
+    if doc_in.rendered_content is not None and doc_in.rendered_content.strip():
+        doc.rendered_content = doc_in.rendered_content
+    elif doc_in.field_data is not None:
+        doc.rendered_content = template_service.render_document(doc.template_id, doc.field_data)
+
     if doc_in.field_data is not None:
         doc.field_data = doc_in.field_data
-        doc.rendered_content = template_service.render_document(doc.template_id, doc.field_data)
         pct, _, _ = template_service.calculate_completeness(doc.template_id, doc.field_data)
         doc.status = "completed" if pct >= 95.0 else "draft"
 

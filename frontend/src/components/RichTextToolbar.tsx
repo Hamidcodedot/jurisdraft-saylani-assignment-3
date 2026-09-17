@@ -18,6 +18,8 @@ import {
   FilePlus2,
   PenTool,
   RotateCcw,
+  Sparkles,
+  Eye,
 } from 'lucide-react';
 
 interface RichTextToolbarProps {
@@ -26,6 +28,8 @@ interface RichTextToolbarProps {
   onResetContent?: () => void;
   isEditingEnabled: boolean;
   onToggleEditMode: () => void;
+  wordCount?: number;
+  charCount?: number;
 }
 
 export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
@@ -34,6 +38,8 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
   onResetContent,
   isEditingEnabled,
   onToggleEditMode,
+  wordCount,
+  charCount,
 }) => {
   if (!editor) return null;
 
@@ -43,19 +49,28 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
       {/* Left Formatting Group */}
       <div className="flex items-center flex-wrap gap-1">
         
-        {/* Edit Mode Toggle */}
+        {/* Active Mode Indicator / Toggle */}
         <button
           type="button"
           onClick={onToggleEditMode}
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition mr-2 ${
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition mr-2 ${
             isEditingEnabled
               ? 'bg-slate-900 text-white shadow-2xs'
-              : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
           }`}
-          title={isEditingEnabled ? 'Click to switch to View Mode' : 'Click to enable In-Place Rich Text Editing'}
+          title={isEditingEnabled ? 'Switch to Paginated Print View' : 'Enable Direct In-Place Editing'}
         >
-          <PenTool className="w-3 h-3 text-[#D4AF37]" />
-          <span>{isEditingEnabled ? 'Editing Live' : 'Enable Edit Mode'}</span>
+          {isEditingEnabled ? (
+            <>
+              <PenTool className="w-3 h-3 text-[#D4AF37]" />
+              <span>Direct Edit Mode</span>
+            </>
+          ) : (
+            <>
+              <Eye className="w-3 h-3 text-slate-500" />
+              <span>Page Preview Mode</span>
+            </>
+          )}
         </button>
 
         <div className="h-4 w-[1px] bg-slate-200 mx-1" />
@@ -68,7 +83,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('bold')
               ? 'bg-slate-200 text-slate-900 font-bold'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Bold (Ctrl+B)"
         >
@@ -82,7 +97,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('italic')
               ? 'bg-slate-200 text-slate-900'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Italic (Ctrl+I)"
         >
@@ -96,7 +111,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('underline')
               ? 'bg-slate-200 text-slate-900'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Underline (Ctrl+U)"
         >
@@ -110,7 +125,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('strike')
               ? 'bg-slate-200 text-slate-900'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Strikethrough"
         >
@@ -127,7 +142,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`px-1.5 py-1 rounded text-[11px] font-bold transition ${
             editor.isActive('heading', { level: 1 })
               ? 'bg-slate-900 text-white'
-              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Heading 1 (Document Title)"
         >
@@ -141,7 +156,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`px-1.5 py-1 rounded text-[11px] font-bold transition ${
             editor.isActive('heading', { level: 2 })
               ? 'bg-slate-900 text-white'
-              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Heading 2 (Article / Section)"
         >
@@ -155,9 +170,9 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`px-1.5 py-1 rounded text-[11px] font-bold transition ${
             editor.isActive('heading', { level: 3 })
               ? 'bg-slate-900 text-white'
-              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:bg-slate-100 disabled:opacity-30'
           }`}
-          title="Heading 3 (Subsection)"
+          title="Heading 3 (Clause / Subsection)"
         >
           H3
         </button>
@@ -172,7 +187,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('bulletList')
               ? 'bg-slate-200 text-slate-900'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Bullet List"
         >
@@ -186,7 +201,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           className={`p-1.5 rounded transition ${
             editor.isActive('orderedList')
               ? 'bg-slate-200 text-slate-900'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30'
           }`}
           title="Numbered List"
         >
@@ -197,7 +212,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           type="button"
           disabled={!isEditingEnabled}
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40 transition"
+          className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 transition"
           title="Horizontal Rule"
         >
           <Minus className="w-3.5 h-3.5" />
@@ -208,8 +223,8 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
             type="button"
             disabled={!isEditingEnabled}
             onClick={onInsertPageBreak}
-            className="flex items-center gap-1 px-2 py-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-40 text-[11px] font-medium transition"
-            title="Insert Physical Page Break"
+            className="flex items-center gap-1 px-2 py-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 text-[11px] font-medium transition border border-transparent hover:border-slate-200"
+            title="Insert Physical Sheet Page Break"
           >
             <FilePlus2 className="w-3.5 h-3.5 text-blue-600" />
             <span>Page Break</span>
@@ -218,37 +233,45 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
 
       </div>
 
-      {/* Right Undo / Redo / Reset Group */}
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          disabled={!editor.can().undo() || !isEditingEnabled}
-          onClick={() => editor.chain().focus().undo().run()}
-          className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 transition"
-          title="Undo (Ctrl+Z)"
-        >
-          <Undo className="w-3.5 h-3.5" />
-        </button>
+      {/* Right Undo / Redo / Word Count / Reset Group */}
+      <div className="flex items-center gap-2">
+        {wordCount !== undefined && (
+          <span className="hidden sm:inline text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+            {wordCount.toLocaleString()} words
+          </span>
+        )}
 
-        <button
-          type="button"
-          disabled={!editor.can().redo() || !isEditingEnabled}
-          onClick={() => editor.chain().focus().redo().run()}
-          className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 transition"
-          title="Redo (Ctrl+Y)"
-        >
-          <Redo className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            disabled={!editor.can().undo() || !isEditingEnabled}
+            onClick={() => editor.chain().focus().undo().run()}
+            className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 transition"
+            title="Undo (Ctrl+Z)"
+          >
+            <Undo className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            type="button"
+            disabled={!editor.can().redo() || !isEditingEnabled}
+            onClick={() => editor.chain().focus().redo().run()}
+            className="p-1.5 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 transition"
+            title="Redo (Ctrl+Y)"
+          >
+            <Redo className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         {onResetContent && (
           <button
             type="button"
             onClick={onResetContent}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded transition ml-1"
-            title="Reset to original AI drafted template"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded transition border border-transparent hover:border-amber-200"
+            title="Reset to default template clauses"
           >
             <RotateCcw className="w-3 h-3" />
-            <span>Reset Draft</span>
+            <span className="hidden md:inline">Reset</span>
           </button>
         )}
       </div>

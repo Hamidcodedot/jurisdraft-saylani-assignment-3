@@ -140,6 +140,7 @@ export const api = {
     template_id: string;
     title: string;
     field_data: Record<string, any>;
+    rendered_content?: string;
   }): Promise<DocumentDetail> {
     const res = await fetch(`${API_BASE}/documents`, {
       method: 'POST',
@@ -156,6 +157,7 @@ export const api = {
   async updateDocument(id: string, data: {
     title?: string;
     field_data?: Record<string, any>;
+    rendered_content?: string;
     status?: string;
   }): Promise<DocumentDetail> {
     const res = await fetch(`${API_BASE}/documents/${id}`, {
@@ -230,7 +232,8 @@ export const api = {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Sign up failed');
+      const msg = typeof err.detail === 'string' ? err.detail : (Array.isArray(err.detail) ? err.detail.map((d: any) => d.msg || d).join(', ') : 'Sign up failed');
+      throw new Error(msg);
     }
     return res.json();
   },
@@ -243,7 +246,8 @@ export const api = {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Incorrect email or password');
+      const msg = typeof err.detail === 'string' ? err.detail : (Array.isArray(err.detail) ? err.detail.map((d: any) => d.msg || d).join(', ') : 'Incorrect email or password');
+      throw new Error(msg);
     }
     return res.json();
   },
