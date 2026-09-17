@@ -55,7 +55,7 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
     version=settings.VERSION,
-    debug=True
+    debug=False
 )
 
 @app.middleware("http")
