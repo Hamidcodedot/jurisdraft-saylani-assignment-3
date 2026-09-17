@@ -17,32 +17,38 @@ def _get_default_db_url(is_sync: bool = False) -> str:
         db_path = Path("/tmp") / "prelegal.db"
     else:
         db_path = BACKEND_DIR / "prelegal.db"
+    try:
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
     prefix = "sqlite:///" if is_sync else "sqlite+aiosqlite:///"
     return f"{prefix}{db_path.as_posix()}"
 
 def _get_templates_dir() -> Path:
     candidates = [
-        BASE_DIR / "templates",
         BACKEND_DIR / "templates",
+        BASE_DIR / "templates",
+        Path(__file__).resolve().parent.parent.parent / "templates",
         Path.cwd() / "templates",
         Path.cwd() / "backend" / "templates",
     ]
     for c in candidates:
         if c.exists() and c.is_dir():
             return c
-    return BASE_DIR / "templates"
+    return BACKEND_DIR / "templates"
 
 def _get_catalog_path() -> Path:
     candidates = [
-        BASE_DIR / "catalog.json",
         BACKEND_DIR / "catalog.json",
+        BASE_DIR / "catalog.json",
+        Path(__file__).resolve().parent.parent.parent / "catalog.json",
         Path.cwd() / "catalog.json",
         Path.cwd() / "backend" / "catalog.json",
     ]
     for c in candidates:
         if c.exists() and c.is_file():
             return c
-    return BASE_DIR / "catalog.json"
+    return BACKEND_DIR / "catalog.json"
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "JurisDraft"

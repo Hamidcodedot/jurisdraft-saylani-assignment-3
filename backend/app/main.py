@@ -23,6 +23,8 @@ from backend.app.db.session import init_db
 from backend.app.api.v1.routers import auth, templates, chat, documents
 from backend.app.services.template_service import template_service
 
+import traceback
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # If running in serverless environment, pre-seed /tmp/prelegal.db from packaged DB if needed
@@ -35,11 +37,18 @@ async def lifespan(app: FastAPI):
             except Exception as e:
                 print(f"[!] Notice: Seed DB copy to /tmp skipped: {e}")
 
-    # Initialize database tables on startup
-    await init_db()
+    # Initialize database tables on startup (safe with try/except)
+    try:
+        await init_db()
+    except Exception as e:
+        print(f"[!] Warning: Database init during startup: {e}")
+
     # Verify templates load
-    catalog = template_service.get_catalog()
-    print(f"[*] JurisDraft Backend initialized with {len(catalog)} legal templates.")
+    try:
+        catalog = template_service.get_catalog()
+        print(f"[*] JurisDraft Backend initialized with {len(catalog)} legal templates.")
+    except Exception as e:
+        print(f"[!] Warning: Templates catalog load during startup: {e}")
     yield
 
 app = FastAPI(
@@ -48,6 +57,17 @@ app = FastAPI(
     version=settings.VERSION,
     lifespan=lifespan
 )
+
+# Global Exception Handler to capture 500 errors transparently
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    error_msg = f"{type(exc).__name__}: {str(exc)}"
+    print(f"[ERROR] {request.method} {request.url.path} -> {error_msg}")
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"detail": error_msg, "path": request.url.path}
+    )
 
 # CORS Middleware
 app.add_middleware(
@@ -59,12 +79,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount API Routers
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(templates.router, prefix=settings.API_V1_STR)
-app.include_router(chat.router, prefix=settings.API_V1_STR)
-app.include_router(documents.router, prefix=settings.API_V1_STR)
+# Mount API Routers under both /api/v1 and /v1 (covers all Vercel rewrite permutations)
+for r in [auth.router, templates.router, chat.router, documents.router]:
+    app.include_router(r, prefix=settings.API_V1_STR)
+    app.include_router(r, prefix="/v1")
 
+@app.get("/health", tags=["Health"])
 @app.get("/api/health", tags=["Health"])
 async def health_check():
     """System health check endpoint."""
