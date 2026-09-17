@@ -1,5 +1,6 @@
 import os
 import sys
+import types
 import shutil
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -12,6 +13,16 @@ _ROOT_DIR = _BACKEND_DIR.parent
 for _p in [str(_ROOT_DIR), str(_BACKEND_DIR)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
+
+# Ensure 'backend' is recognized as a package pointing to _BACKEND_DIR
+if "backend" not in sys.modules:
+    try:
+        import backend  # noqa
+    except ImportError:
+        _backend_pkg = types.ModuleType("backend")
+        _backend_pkg.__path__ = [str(_BACKEND_DIR)]
+        _backend_pkg.__file__ = str(_BACKEND_DIR / "__init__.py")
+        sys.modules["backend"] = _backend_pkg
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
