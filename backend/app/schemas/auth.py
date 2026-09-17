@@ -1,18 +1,37 @@
+import re
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, Field, field_validator
+
+EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 class UserBase(BaseModel):
-    email: EmailStr
+    email: str = Field(..., min_length=3, max_length=255)
     full_name: str
     company_name: Optional[str] = None
 
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, v: str) -> str:
+        v = v.strip().lower()
+        if not EMAIL_REGEX.match(v):
+            raise ValueError("Please provide a valid email address.")
+        return v
+
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=6, max_length=128)
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, v: str) -> str:
+        v = v.strip().lower()
+        if not EMAIL_REGEX.match(v):
+            raise ValueError("Please provide a valid email address.")
+        return v
 
 class UserResponse(UserBase):
     id: int
