@@ -1,18 +1,40 @@
 import os
+import sys
+import shutil
 from contextlib import asynccontextmanager
 from pathlib import Path
+
+# Add project root and backend dir to sys.path
+_CURRENT_DIR = Path(__file__).resolve().parent
+_BACKEND_DIR = _CURRENT_DIR.parent
+_ROOT_DIR = _BACKEND_DIR.parent
+
+for _p in [str(_ROOT_DIR), str(_BACKEND_DIR)]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
-from backend.app.core.config import settings
+from backend.app.core.config import settings, IS_SERVERLESS, BACKEND_DIR
 from backend.app.db.session import init_db
 from backend.app.api.v1.routers import auth, templates, chat, documents
 from backend.app.services.template_service import template_service
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # If running in serverless environment, pre-seed /tmp/prelegal.db from packaged DB if needed
+    if IS_SERVERLESS:
+        tmp_db = Path("/tmp") / "prelegal.db"
+        source_db = BACKEND_DIR / "prelegal.db"
+        if not tmp_db.exists() and source_db.exists():
+            try:
+                shutil.copy2(source_db, tmp_db)
+            except Exception as e:
+                print(f"[!] Notice: Seed DB copy to /tmp skipped: {e}")
+
     # Initialize database tables on startup
     await init_db()
     # Verify templates load
@@ -31,6 +53,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
