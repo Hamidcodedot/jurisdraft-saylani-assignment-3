@@ -1,21 +1,26 @@
+import sys
+from pathlib import Path
+
+_BACKEND_DIR = Path(__file__).resolve().parent.parent
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
+
 import asyncio
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.pool import StaticPool
 
-try:
-    from app.main import app
-    from app.db.session import Base, get_db
-except ImportError:
-    from backend.app.main import app
-    from backend.app.db.session import Base, get_db
+from app.main import app
+from app.db.session import Base, get_db
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 test_engine = create_async_engine(
     TEST_DATABASE_URL,
-    connect_args={"check_same_thread": False}
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool
 )
 
 TestSessionLocal = async_sessionmaker(

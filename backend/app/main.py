@@ -51,8 +51,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
-    version=settings.VERSION,
-    lifespan=lifespan
+    version=settings.VERSION
 )
 
 # Global Exception Handler to capture 500 errors transparently
