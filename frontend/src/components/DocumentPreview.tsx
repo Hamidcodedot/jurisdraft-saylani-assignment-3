@@ -346,13 +346,10 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
 
       if (trimmed.startsWith('# ')) {
         return (
-          <div key={idx} className="text-center pb-3 mb-4 border-b border-slate-300">
+          <div key={idx} className="text-center pb-3 mb-6 border-b-2 border-slate-900">
             <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 font-serif uppercase">
               {trimmed.replace(/^#\s*/, '')}
             </h1>
-            <div className="text-[10px] text-slate-500 font-sans mt-1 tracking-widest uppercase font-semibold">
-              JURISDRAFT ENTERPRISE REPOSITORY • STANDARD FORM
-            </div>
           </div>
         );
       }
@@ -584,6 +581,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
       {/* Physical Document Canvas Viewport */}
       <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-10 flex flex-col items-center document-viewport">
         
+        {/* Non-Printable Software Disclaimer Notice (Visible in UI only, completely excluded from physical prints/exports) */}
+        <div className="w-full max-w-[816px] mb-4 no-print">
+          <LegalDisclaimer compact={true} />
+        </div>
+
         {/* Container for Printable Sheets */}
         <div id="printable-document-container" className="w-full flex flex-col items-center">
           
@@ -598,20 +600,13 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
                 className="document-page-sheet w-full max-w-[816px] min-h-[1056px] bg-white rounded-xs shadow-[0_6px_25px_rgba(0,0,0,0.08)] border border-slate-300/80 p-10 sm:p-16 flex flex-col justify-between mb-8 relative legal-document transition-transform duration-150"
               >
                 {/* Top Running Header */}
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-6 text-[10px] text-slate-400 font-sans uppercase tracking-wider select-none">
-                  <span>JurisDraft Institutional Standard</span>
-                  <span className="font-semibold text-slate-600">{templateName}</span>
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-6 text-[10px] text-slate-500 font-serif uppercase tracking-wider select-none">
+                  <span className="font-semibold text-slate-700">{documentTitle || templateName}</span>
+                  <span className="font-mono text-slate-400 text-[9px]">CONFIDENTIAL • PRELIMINARY DRAFT</span>
                 </div>
 
                 {/* Page Content Body */}
                 <div className="flex-1 space-y-1">
-                  
-                  {/* Page 1 Mandatory Legal Disclaimer Banner */}
-                  {pageIndex === 0 && (
-                    <div className="mb-6">
-                      <LegalDisclaimer />
-                    </div>
-                  )}
 
                   {/* Mode A: In-Place Live Rich Text Editor (Active on Page 1 or undivided) */}
                   {isEditingLive && pageIndex === 0 ? (
@@ -946,11 +941,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({
 
                 {/* Bottom Running Footer on Each Page */}
                 <div className="mt-12 pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400 font-sans select-none">
-                  <div>CONFIDENTIAL &amp; PROPRIETARY</div>
+                  <div className="font-semibold tracking-wider">CONFIDENTIAL &amp; PROPRIETARY</div>
                   <div className="font-mono font-bold text-slate-600">
                     PAGE {pageIndex + 1} OF {documentPages.length}
                   </div>
-                  <div>COMPILED BY JURISDRAFT ENTERPRISE</div>
+                  <div className="font-mono text-[9px] text-slate-400 uppercase">EXECUTION COPY</div>
                 </div>
 
               </div>

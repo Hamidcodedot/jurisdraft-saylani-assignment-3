@@ -222,6 +222,16 @@
     print-color-adjust: exact !important;
   }
 
+  /* Strip interactive highlighting in print so printed text is clean black legal print */
+  .doc-var-highlight,
+  .doc-var-pending {
+    background-color: transparent !important;
+    color: #0F172A !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    font-weight: normal !important;
+  }
+
   .page-break-indicator {
     display: none !important;
   }

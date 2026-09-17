@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { X, ShieldCheck, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { api } from '@/lib/api';
-import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 
 import { BrandLogo } from './BrandLogo';
 
@@ -21,6 +21,7 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
   onSuccess,
   currentTitle,
 }) => {
+  const { login } = useAuth();
   const [mode, setMode] = useState<'login' | 'signup'>('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,12 +45,10 @@ export const SaveDraftModal: React.FC<SaveDraftModalProps> = ({
           full_name: fullName,
           company_name: companyName || undefined,
         });
-        saveAuthToken(res.access_token);
-        saveCurrentUser(res.user);
+        login(res.access_token, res.user);
       } else {
         const res = await api.login(email, password);
-        saveAuthToken(res.access_token);
-        saveCurrentUser(res.user);
+        login(res.access_token, res.user);
       }
       onSuccess('');
     } catch (err: any) {

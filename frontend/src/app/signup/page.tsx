@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import { User, Mail, Lock, Building, ArrowRight, ShieldCheck } from 'lucide-react';
 import { BrandLogo } from '@/components/BrandLogo';
 import { api } from '@/lib/api';
-import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,8 +30,7 @@ export default function SignUpPage() {
         full_name: fullName,
         company_name: companyName || undefined,
       });
-      saveAuthToken(res.access_token);
-      saveCurrentUser(res.user);
+      login(res.access_token, res.user);
       router.push('/documents');
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please check details.');

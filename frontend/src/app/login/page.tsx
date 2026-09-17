@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { BrandLogo } from '@/components/BrandLogo';
 import { api } from '@/lib/api';
-import { saveAuthToken, saveCurrentUser } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,8 +23,7 @@ export default function LoginPage() {
 
     try {
       const res = await api.login(email, password);
-      saveAuthToken(res.access_token);
-      saveCurrentUser(res.user);
+      login(res.access_token, res.user);
       router.push('/documents');
     } catch (err: any) {
       setError(err.message || 'Incorrect email or password.');
