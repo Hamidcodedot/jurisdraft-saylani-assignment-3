@@ -3,9 +3,9 @@ import re
 import json
 from typing import Dict, Any, List, Tuple
 from datetime import datetime
-from backend.app.core.config import settings
-from backend.app.services.template_service import template_service
-from backend.app.schemas.chat import ChatMessage, ChatResponse
+from app.core.config import settings
+from app.services.template_service import template_service
+from app.schemas.chat import ChatMessage, ChatResponse
 
 class AIService:
     def __init__(self):

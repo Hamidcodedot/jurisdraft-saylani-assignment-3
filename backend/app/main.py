@@ -1,38 +1,24 @@
 import os
 import sys
-import types
 import shutil
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-# Add project root and backend dir to sys.path
+# Add backend directory to sys.path
 _CURRENT_DIR = Path(__file__).resolve().parent
 _BACKEND_DIR = _CURRENT_DIR.parent
-_ROOT_DIR = _BACKEND_DIR.parent
-
-for _p in [str(_ROOT_DIR), str(_BACKEND_DIR)]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
-
-# Ensure 'backend' is recognized as a package pointing to _BACKEND_DIR
-if "backend" not in sys.modules:
-    try:
-        import backend  # noqa
-    except ImportError:
-        _backend_pkg = types.ModuleType("backend")
-        _backend_pkg.__path__ = [str(_BACKEND_DIR)]
-        _backend_pkg.__file__ = str(_BACKEND_DIR / "__init__.py")
-        sys.modules["backend"] = _backend_pkg
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
-from backend.app.core.config import settings, IS_SERVERLESS, BACKEND_DIR
-from backend.app.db.session import init_db
-from backend.app.api.v1.routers import auth, templates, chat, documents
-from backend.app.services.template_service import template_service
+from app.core.config import settings, IS_SERVERLESS, BACKEND_DIR
+from app.db.session import init_db
+from app.api.v1.routers import auth, templates, chat, documents
+from app.services.template_service import template_service
 
 import traceback
 

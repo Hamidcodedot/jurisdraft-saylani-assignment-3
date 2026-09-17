@@ -1,8 +1,8 @@
 from typing import List, Dict, Any
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
-from backend.app.schemas.template import TemplateSummary, TemplateDetail
-from backend.app.services.template_service import template_service
+from app.schemas.template import TemplateSummary, TemplateDetail
+from app.services.template_service import template_service
 
 router = APIRouter(prefix="/templates", tags=["Templates"])
 

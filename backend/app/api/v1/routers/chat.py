@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
-from backend.app.schemas.chat import ChatRequest, ChatResponse
-from backend.app.services.ai_service import ai_service
-from backend.app.services.template_service import template_service
+from app.schemas.chat import ChatRequest, ChatResponse
+from app.services.ai_service import ai_service
+from app.services.template_service import template_service
 
 router = APIRouter(prefix="/chat", tags=["AI Conversational Drafting"])
 

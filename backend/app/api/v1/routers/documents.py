@@ -4,12 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response
 from pydantic import BaseModel
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.db.session import get_db
-from backend.app.db.models import Document, User
-from backend.app.schemas.document import DocumentCreate, DocumentUpdate, DocumentResponse, DocumentListItem
-from backend.app.services.template_service import template_service
-from backend.app.services.pdf_service import pdf_service
-from backend.app.api.deps import get_current_user, get_current_user_optional
+from app.db.session import get_db
+from app.db.models import Document, User
+from app.schemas.document import DocumentCreate, DocumentUpdate, DocumentResponse, DocumentListItem
+from app.services.template_service import template_service
+from app.services.pdf_service import pdf_service
+from app.api.deps import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
 

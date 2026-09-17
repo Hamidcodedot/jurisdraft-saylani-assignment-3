@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
-from backend.app.core.config import settings
+from app.core.config import settings
 
 # Async engine for non-blocking FastAPI operations
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
-    connect_args={"check_same_thread": False}
+    connect_args={"check_same_thread": False, "timeout": 30}
 )
 
 AsyncSessionLocal = async_sessionmaker(
@@ -22,10 +22,10 @@ Base = declarative_base()
 # Ensure all models are registered with Base metadata
 def _ensure_models():
     try:
-        from backend.app.db import models  # noqa: F401
+        from app.db import models  # noqa: F401
     except ImportError:
         try:
-            import app.db.models  # noqa: F401
+            from backend.app.db import models  # noqa: F401
         except ImportError:
             pass
 

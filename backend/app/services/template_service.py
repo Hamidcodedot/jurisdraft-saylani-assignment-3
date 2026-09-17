@@ -2,8 +2,8 @@ import json
 import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
-from backend.app.core.config import settings
-from backend.app.schemas.template import TemplateDetail, TemplateSummary, TemplateField
+from app.core.config import settings
+from app.schemas.template import TemplateDetail, TemplateSummary, TemplateField
 
 class TemplateService:
     def __init__(self):

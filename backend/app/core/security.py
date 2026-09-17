@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Any
 from jose import jwt, JWTError
-from backend.app.core.config import settings
+from app.core.config import settings
 
 def get_password_hash(password: str) -> str:
     """Secure password hashing using PBKDF2 with SHA-256 and per-user salt."""

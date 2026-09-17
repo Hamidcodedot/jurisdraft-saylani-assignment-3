@@ -1,9 +1,9 @@
 from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.db.models import User
-from backend.app.core.security import get_password_hash, verify_password, create_access_token
-from backend.app.schemas.auth import UserCreate, Token, UserResponse
+from app.db.models import User
+from app.core.security import get_password_hash, verify_password, create_access_token
+from app.schemas.auth import UserCreate, Token, UserResponse
 
 class AuthService:
     async def get_user_by_email(self, db: AsyncSession, email: str) -> Optional[User]:

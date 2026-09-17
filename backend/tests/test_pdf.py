@@ -1,5 +1,8 @@
 import pytest
-from backend.app.services.pdf_service import pdf_service
+try:
+    from app.services.pdf_service import pdf_service
+except ImportError:
+    from backend.app.services.pdf_service import pdf_service
 
 def test_pdf_generation():
     markdown_content = """# MUTUAL NON-DISCLOSURE AGREEMENT
