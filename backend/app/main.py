@@ -48,22 +48,28 @@ async def lifespan(app: FastAPI):
         print(f"[!] Warning: Templates catalog load during startup: {e}")
     yield
 
+from starlette.types import ASGIApp, Scope, Receive, Send
+from fastapi.responses import Response
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
-    version=settings.VERSION
+    version=settings.VERSION,
+    debug=True
 )
 
-# Global Exception Handler to capture 500 errors transparently
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    error_msg = f"{type(exc).__name__}: {str(exc)}"
-    print(f"[ERROR] {request.method} {request.url.path} -> {error_msg}")
-    traceback.print_exc()
-    return JSONResponse(
-        status_code=500,
-        content={"detail": error_msg, "path": request.url.path}
-    )
+@app.middleware("http")
+async def diagnostic_http_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as exc:
+        tb = traceback.format_exc()
+        print(f"[HTTP_MIDDLEWARE_ERROR] {tb}", file=sys.stderr, flush=True)
+        return Response(
+            content=f"SERVER_EXCEPTION: {type(exc).__name__}: {str(exc)}\n{tb}",
+            status_code=500,
+            media_type="text/plain"
+        )
 
 # CORS Middleware
 app.add_middleware(
